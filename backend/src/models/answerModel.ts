@@ -1,10 +1,17 @@
 import { model, Schema } from 'mongoose';
-import { IAnswer } from '../types';
+import { IAnswer, IAnswerOption } from '../types';
+
+const answerOptionSchema = new Schema<IAnswerOption>({
+  text: { type: String, required: true },
+  is_correct: { type: Boolean, required: true },
+});
 
 const answerSchema = new Schema<IAnswer>({
-    body: { type: String, required: true },
-    user_id: { type: String, required: false },
-    createdAt: { type: Date, default: Date.now }
-  });
+  body: { type: String, required: true },
+  is_correct: { type: Boolean, required: true },
+  options: { type: [answerOptionSchema], required: true },
+  createdAt: { type: Date, default: Date.now },
+});
+
 
 export const Answer = model('Answer', answerSchema);

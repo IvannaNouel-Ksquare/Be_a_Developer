@@ -1,10 +1,16 @@
 import mongoose, { Schema } from 'mongoose';
 
+interface IAnswerOption {
+  text: string;
+  is_correct: boolean;
+}
+
 interface IAnswer {
   answer_id: number;
-  user_id?: string;
   body: string;
   createdAt: Date;
+  is_correct: boolean;
+  options: IAnswerOption[];
 }
 
 export interface IQuestion extends IAnswer {

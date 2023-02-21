@@ -14,7 +14,7 @@ export const createQuestion = async (req: Request, res: Response) => {
                 })
                 return;
             }
-            const newQuestion = new Question({  
+            const newQuestion = new Question({ 
                 title,
                 body,
                 category,
