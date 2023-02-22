@@ -1,5 +1,13 @@
 import mongoose, { Schema } from 'mongoose';
 
+interface IUser {
+  user_id:string;
+  name: string;
+  email: string;
+  role:string;
+  password: string;
+}
+
 interface IAnswerOption {
   text: string;
   is_correct: boolean;
