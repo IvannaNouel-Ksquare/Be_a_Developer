@@ -7,7 +7,7 @@ const answerOptionSchema = new Schema<IAnswerOption>({
 });
 
 const answerSchema = new Schema<IAnswer>({
-  body: { type: String, required: true },
+  answerText: { type: String, required: true },
   is_correct: { type: Boolean, required: true },
   options: { type: [answerOptionSchema], required: true },
   createdAt: { type: Date, default: Date.now },

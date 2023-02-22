@@ -15,7 +15,7 @@ interface IAnswerOption {
 
 interface IAnswer {
   answer_id: number;
-  body: string;
+  answerText: string;
   createdAt: Date;
   is_correct: boolean;
   options: IAnswerOption[];
