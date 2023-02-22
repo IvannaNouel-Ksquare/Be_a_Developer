@@ -33,7 +33,58 @@ export const createQuestion = async (req: Request, res: Response) => {
         });
     }
 };
+export const updateQuestionById = async (req: Request, res: Response) => {
+    try {
+      const questionId = req.params.questionId;
+  
+      const { title, body, category, answers } = req.body;
+  
+      const question = await Question.findByIdAndUpdate(
+        questionId,
+        { title, body, category, answers },
+        { new: true }
+      );
+  
+      if (!question) {
+        return res.status(404).json({
+          error: "Question not found",
+        });
+      }
+  
+      res.status(200).json({
+        message: "Question updated",
+        question,
+      });
+    } catch (error) {
+        res.status(500).json({
+            message: error
+        });
+    }
+  };
+  
+  export const deleteQuestionById = async (req: Request, res: Response) => {
 
+    const questionId = req.params.questionId;
+  
+    try {
+      const deletedQuestion = await Question.findByIdAndDelete(questionId);
+  
+      if (!deletedQuestion) {
+        return res.status(404).json({
+          error: 'Question not found'
+        });
+      }
+  
+      res.status(200).json({
+        message: 'Question deleted',
+        deletedQuestion
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: error
+      });
+    }
+  };
 export const getAllQuestions = async (req: Request, res: Response) => {
     try {
         const questions = await Question.find();
