@@ -1,0 +1,26 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .container .categories {
+    background-color: gray;
+    color: black;
+    width: 20%;
+  }
+  
+  .container .categories:hover {
+    background-color: rgb(171, 169, 169);
+    color: black;
+  }
+  
+  .container .rules h1 {
+    padding: 4%;
+    font-size: 3.2em;
+    line-height: 1.1;
+    color: #ffffff;
+    padding-bottom: 5%;
+  }
+ 
+  
