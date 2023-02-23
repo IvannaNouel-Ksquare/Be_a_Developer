@@ -2,7 +2,7 @@ import { Route, Routes, BrowserRouter } from "react-router-dom";
 import Login from "../pages/Login";
 import Home from "../pages/Home";
 import RequireAuth from "../context/RequireAuth";
-import Categories from "../pages/Prueba";
+import Categories from "../pages/Categories";
 
 const Router = () => {
   return (
