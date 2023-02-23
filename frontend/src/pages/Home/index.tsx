@@ -16,16 +16,19 @@ const Home = () => {
     navigate("/categories");
   };
   return (
-    <DefaultMenuTemplate isOpen={false}>
-      <div className="container">
-          <h1>Rules</h1>
-        <ButtonControl
-          nameClass={"categories"}
-          label={"categories"}
-          handleClick={handleOpenButton}
-        />
-      </div>
-    </DefaultMenuTemplate>
+      <DefaultMenuTemplate>
+        <div className="container">
+          <div className="rules">
+            <h1>Rules</h1>
+          </div>
+
+          <ButtonControl
+            nameClass={"categories"}
+            label={"categories"}
+            handleClick={handleOpenButton}
+          />
+        </div>
+      </DefaultMenuTemplate>
   );
 };
 

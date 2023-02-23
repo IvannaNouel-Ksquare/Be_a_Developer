@@ -32,27 +32,15 @@ const drawerWidth = 240;
 
 //the side menu 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
-  open?: boolean;
+  open: boolean;
 }>(({ theme, open }) => ({
-  flexGrow: 1,
-  transition: theme.transitions.create("margin", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginRight: 0,
-  }),
+  
 }));
 
 //interaface passed to the 'DefaultTemplateMenu'
 interface Props extends MuiAppBarProps {
   open?: boolean;
   children: React.ReactNode;
-  isOpen: boolean;
 }
 
 //styles 
@@ -61,9 +49,10 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   alignItems: "center",
   ...theme.mixins.toolbar,
   justifyContent: "flex-start",
+
 }));
 
-const DefaultMenuTemplate = ({ children, isOpen = false }: Props) => {
+const DefaultMenuTemplate = ({ children }: Props) => {
 
   const navigate = useNavigate();
 
@@ -87,75 +76,67 @@ const DefaultMenuTemplate = ({ children, isOpen = false }: Props) => {
   };
 
   return (
-    <Box>
-      <Toolbar disableGutters>
-        <IconButton
-          color="inherit"
-          onClick={handleDrawerOpen}
-          sx={{ ...(open && { display: "none" }) }}
-        >
-          <MenuIcon sx={{ fontSize: "40px" }} />
-        </IconButton>
-      </Toolbar>
-      <Main open={open}>{children}</Main>
-      <Drawer
-        sx={{
-          width: drawerWidth,
-          "& .MuiDrawer-paper": {
-            width: drawerWidth,
-          },
-        }}
-        anchor="left"
-        open={open}
-      >
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon sx={{ fontSize: "40px" }} />
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
-        <List>
-          <ListItem
-            disablePadding
-            sx={{ marginBottom: "2vh", marginTop: "2vh" }}
-          >
-            <ListItemButton id="home" onClick={handleDrawerButtonClick}>
-              <ListItemIcon>
-                <HomeIcon sx={{ fontSize: "35px" }} />
-              </ListItemIcon>
-              <ListItemText primary={"Home"} />
-            </ListItemButton>
-          </ListItem>
-          <ListItem
-            disablePadding
-            sx={{ marginBottom: "2vh", marginTop: "2vh" }}
-          >
-            
-              <ListItemButton id="createQuestion" onClick={handleDrawerButtonClick}>
-                <ListItemIcon>
-                  <CreateIcon sx={{ fontSize: "35px" }} />
-                </ListItemIcon>
-                <ListItemText primary={"Create a Question"} />
-              </ListItemButton>
-          
-          </ListItem>
-        </List>
-        <List sx={{ marginTop: "auto" }}>
-          <ListItem
-            disablePadding
-            sx={{ marginBottom: "2vh", marginTop: "2vh" }}
-          >
-            <ListItemButton id="logout" onClick={() => setOpenModal(true)}>
-              <ListItemIcon>
-                <LogoutIcon sx={{ fontSize: "35px" }} />
-              </ListItemIcon>
-              <ListItemText primary={"Log Out"} />
-            </ListItemButton>
-          </ListItem>
-        </List>
-        <CustomModal open={openModal} setOpen={setOpenModal} />
-      </Drawer>
-    </Box>
+   <Box >
+  {/* Show Toolbar and Drawer */}
+  <Toolbar sx={{ backgroundColor: '#1d1e1f' }}>
+    <IconButton
+      onClick={handleDrawerOpen}
+      sx={{
+        display: open ? 'none' : 'block',
+      }}
+    >
+      <MenuIcon sx={{ fontSize: '40px', color: '#6d6b6b' }} />
+    </IconButton>
+  </Toolbar>
+  <Main open={open}>{children}</Main>
+  <Drawer
+    sx={{
+      width: drawerWidth,
+      '& .MuiDrawer-paper': {
+        width: drawerWidth,
+      },
+    }}
+    anchor="left"
+    open={open}
+  >
+    <DrawerHeader>
+      <IconButton onClick={handleDrawerClose}>
+        <ChevronLeftIcon sx={{ fontSize: '40px' }} />
+      </IconButton>
+    </DrawerHeader>
+    <Divider />
+    <List>
+      <ListItem disablePadding>
+        <ListItemButton id="home" onClick={handleDrawerButtonClick}>
+          <ListItemIcon>
+            <HomeIcon sx={{ fontSize: '35px' }} />
+          </ListItemIcon>
+          <ListItemText primary="Home" />
+        </ListItemButton>
+      </ListItem>
+      <ListItem disablePadding>
+      <ListItemButton id="createQuestion" onClick={handleDrawerButtonClick}>
+          <ListItemIcon>
+            <CreateIcon sx={{ fontSize: '35px' }} />
+          </ListItemIcon>
+          <ListItemText primary="Create a Question" />
+        </ListItemButton>
+      </ListItem>
+    </List>
+    <List sx={{ marginTop: 'auto' }}>
+      <ListItem disablePadding>
+        <ListItemButton id="logout" onClick={() => setOpenModal(true)}>
+          <ListItemIcon>
+            <LogoutIcon sx={{ fontSize: '35px' }} />
+          </ListItemIcon>
+          <ListItemText primary="Log Out" />
+        </ListItemButton>
+      </ListItem>
+    </List>
+  </Drawer>
+  <CustomModal open={openModal} setOpen={setOpenModal} />
+</Box>
+
   );
 };
 
