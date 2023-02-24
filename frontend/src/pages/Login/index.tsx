@@ -18,16 +18,10 @@ const Login = (props: Props) => {
     email: "",
     password: "",
   });
-  // State that stores the current login error message
-  const [invalidLoginMsg, setInvalidLoginMsg] = useState("");
 
-  // State that handles the visibility of the login error message
-  const [invalidLoginMsgVisibility, setInvalidLoginMsgVisibility] =
-    useState(false);
   // State that stores the current login error count
   const [loginErrorCount, setLoginErrorCount] = useState(0);
   // State that handles the visibility of the password
-  const [passVisibility, setPassVisibility] = useState(false);
   const { logIn, signUp } = useAuth();
 
   const [isRegistered, setIsRegistered] = useState(false);
@@ -50,71 +44,67 @@ const Login = (props: Props) => {
 
   const handleSubmit = async (e: React.FormEvent<EventTarget>) => {
     e.preventDefault();
-    // Clearing any error message
-    setInvalidLoginMsgVisibility(false);
+      if (isRegistered) {
+        handleRegister();
+    } else {
+      try {
+        // Using context function to log in
+        const user = await logIn(inputs.email, inputs.password);
 
-    try {
-      // Using context function to log in
-      const user = await logIn(inputs.email, inputs.password);
+        console.log("inputs", inputs.email);
+        console.log("inputs", inputs.password);
 
-      console.log("inputs", inputs.email);
-      console.log("inputs", inputs.password);
+        console.log("User:", user);
 
-      console.log("User:", user);
-
-      if (!user || !user.user || !user.user.accessToken) {
-        throw new Error("Unable to retrieve user token");
-      }
-
-      const token = await user.user.accessToken;
-      const uid = user.user.uid;
-
-      console.log(token);
-      // Setting context value
-
-      context.setUserToken(token);
-
-      // Fetching the manager user
-      const dbUserResponse = await fetch(
-        `https://be-a-developer-quiz.onrender.com/user/userId/${uid}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
+        if (!user || !user.user || !user.user.accessToken) {
+          throw new Error("Unable to retrieve user token");
         }
-      );
-      if (!dbUserResponse.ok) {
-        throw new Error(`Error fetching user data: ${dbUserResponse.status}`);
+
+        const token = await user.user.accessToken;
+        const uid = user.user.uid;
+
+        // Setting context value
+        context.setUserToken(token);
+
+        // Fetching the user
+        const dbUserResponse = await fetch(
+          `https://be-a-developer-quiz.onrender.com/user/userId/${uid}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        if (!dbUserResponse.ok) {
+          throw new Error(`Error fetching user data: ${dbUserResponse.status}`);
+        }
+
+        const dbUser = await dbUserResponse.json();
+        console.log("dbUser>", dbUser);
+
+        const userUid = dbUser.user.uid;
+        console.log("userUid>", userUid);
+
+        // Setting context value
+        context.setUserId(userUid);
+
+        // If the user log in successfully, redirect to the Home view
+        navigate("/home");
+      } catch (error) {
+        console.log(error);
+        console.error(error);
+
+        if (loginErrorCount < 1) {
+          setErrMsg("Incorrect or invalid credentials.");
+          setTimeout(() => {
+            setErrMsg("");
+          }, 3000);
+        }
       }
-      
-      const dbUser = await dbUserResponse.json();
-      console.log("dbUser>", dbUser);
-
-      const userUid = dbUser.user.uid;
-      console.log("userUid>", userUid);
-
-      // Setting context value
-      context.setUserId(userUid);
-
-      // If the user log in successfully, redirect to the Home view
-      navigate("/home");
-    } catch (error) {
-      console.log(error);
-      console.error(error);
-
-      if (loginErrorCount < 5) {
-        setInvalidLoginMsg("Incorrect or invalid credentials.");
-        setLoginErrorCount((prev) => prev + 1);
-      } else {
-        setInvalidLoginMsg("Too many attempts, try later.");
-        setLoginErrorCount(0);
-      }
-      setInvalidLoginMsgVisibility(true);
     }
   };
-
-  //Function to handle register screen
   const handleRegister = async () => {
     if (email && password !== "") {
       const signedUp = await signUp(email, password);
+      console.log("signedUp>",signedUp)
       typeof signedUp === "string"
         ? setErrMsg(`${signedUp}`)
         : setSuccessMsg("Registered user! You can now log in");
@@ -136,6 +126,7 @@ const Login = (props: Props) => {
         <section className="form-container">
           <form className="form">
             <h1>{isRegistered ? "Sign In" : "Log In"}</h1>
+
             <div className="content">
               <p
                 className={
@@ -153,6 +144,7 @@ const Login = (props: Props) => {
               >
                 {successMsg}
               </p>
+
               <input
                 id="email"
                 name="email"
