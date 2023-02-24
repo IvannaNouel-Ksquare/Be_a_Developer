@@ -2,9 +2,8 @@ import "dotenv/config";
 import express from "express";
 import routes from "./routes";
 import database from "./database";
-import * as admin from 'firebase-admin'; 
-const cors = require('cors');
 
+const cors = require('cors');
 
 database.connect();
 

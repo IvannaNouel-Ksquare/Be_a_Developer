@@ -76,7 +76,7 @@ const Login = (props: Props) => {
 
       // Fetching the manager user
       const dbUserResponse = await fetch(
-        `http://localhost:3000/user/userId/${uid}`,
+        `https://be-a-developer-quiz.onrender.com/user/userId/${uid}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
