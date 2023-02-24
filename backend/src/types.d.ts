@@ -1,5 +1,9 @@
 import mongoose, { Schema } from 'mongoose';
 
+interface IUser{
+  user_id: string;
+}
+
 interface IAnswerOption {
   text: string;
   is_correct: boolean;
