@@ -11,7 +11,10 @@ const answerSchema = new Schema<IAnswer>({
   is_correct: { type: Boolean, required: true },
   options: { type: [answerOptionSchema], required: true },
   createdAt: { type: Date, default: Date.now },
-});
+},
+  {
+    collection: 'questions',
+  });
 
 
 export const Answer = model('Answer', answerSchema);

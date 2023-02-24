@@ -1,14 +1,11 @@
 import { CircularProgress } from "@mui/material";
-import { useLocation, Navigate } from "react-router-dom";
+import { useLocation, Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "./AuthCtx";
+import { useDataContext } from "./context";
 import './style.css';
 
-
-type Props = {
-  children?: JSX.Element;
-};
-
-const RequireAuth = ({ children }: Props) => {
+const RequireAuth = () => {
+  const context = useDataContext();
   const location = useLocation();
   const { user, loading } = useAuth();
 
@@ -20,10 +17,10 @@ const RequireAuth = ({ children }: Props) => {
     );
   }
 
-  return user ? (
-    <>{children}</>
+  return user && context.userToken ? (
+    <Outlet />
   ) : (
-    <Navigate to={"/"} state={{ from: location }} replace />
+    <Navigate to={'/'} state={{ from: location }} replace />
   );
 };
 

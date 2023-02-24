@@ -2,14 +2,32 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthCtx";
 import loginImg from "../../assets/login.png";
-import registerImg from "../../assets/register.png"
+import registerImg from "../../assets/register.png";
 
 import "./style.css";
+import { useDataContext } from "../../context/context";
 
 type Props = {};
 
 const Login = (props: Props) => {
   const navigate = useNavigate();
+  // Setting initial states and variables
+  const context = useDataContext();
+  // State that stores the current input values
+  const [inputs, setInputs] = useState({
+    email: "",
+    password: "",
+  });
+  // State that stores the current login error message
+  const [invalidLoginMsg, setInvalidLoginMsg] = useState("");
+
+  // State that handles the visibility of the login error message
+  const [invalidLoginMsgVisibility, setInvalidLoginMsgVisibility] =
+    useState(false);
+  // State that stores the current login error count
+  const [loginErrorCount, setLoginErrorCount] = useState(0);
+  // State that handles the visibility of the password
+  const [passVisibility, setPassVisibility] = useState(false);
   const { logIn, signUp } = useAuth();
 
   const [isRegistered, setIsRegistered] = useState(false);
@@ -23,23 +41,73 @@ const Login = (props: Props) => {
     setErrMsg("");
   }, [email, password, isRegistered]);
 
-  //Function to handle submit button
-  const handleSubmit = (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-    isRegistered ? handleRegister() : handleLogIn();
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputs((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
   };
 
-  //Function to handle logig in screen
-  const handleLogIn = async () => {
-    if (email && password !== "") {
-      const loggedIn = await logIn(email, password);
-      console.log(loggedIn);
-      if (typeof loggedIn === "string") {
-        setErrMsg(`${loggedIn}`);
+  const handleSubmit = async (e: React.FormEvent<EventTarget>) => {
+    e.preventDefault();
+    // Clearing any error message
+    setInvalidLoginMsgVisibility(false);
+
+    try {
+      // Using context function to log in
+      const user = await logIn(inputs.email, inputs.password);
+
+      console.log("inputs", inputs.email);
+      console.log("inputs", inputs.password);
+
+      console.log("User:", user);
+
+      if (!user || !user.user || !user.user.accessToken) {
+        throw new Error("Unable to retrieve user token");
       }
+
+      const token = await user.user.accessToken;
+      const uid = user.user.uid;
+
+      console.log(token);
+      // Setting context value
+
+      context.setUserToken(token);
+
+      // Fetching the manager user
+      const dbUserResponse = await fetch(
+        `http://localhost:3000/user/userId/${uid}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (!dbUserResponse.ok) {
+        throw new Error(`Error fetching user data: ${dbUserResponse.status}`);
+      }
+      
+      const dbUser = await dbUserResponse.json();
+      console.log("dbUser>", dbUser);
+
+      const userUid = dbUser.user.uid;
+      console.log("userUid>", userUid);
+
+      // Setting context value
+      context.setUserId(userUid);
+
+      // If the user log in successfully, redirect to the Home view
       navigate("/home");
-    } else {
-      setErrMsg("Error: Both fields are required");
+    } catch (error) {
+      console.log(error);
+      console.error(error);
+
+      if (loginErrorCount < 5) {
+        setInvalidLoginMsg("Incorrect or invalid credentials.");
+        setLoginErrorCount((prev) => prev + 1);
+      } else {
+        setInvalidLoginMsg("Too many attempts, try later.");
+        setLoginErrorCount(0);
+      }
+      setInvalidLoginMsgVisibility(true);
     }
   };
 
@@ -86,17 +154,21 @@ const Login = (props: Props) => {
                 {successMsg}
               </p>
               <input
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                type="text"
+                id="email"
+                name="email"
+                onChange={handleInputChange}
                 required={true}
+                type={"email"}
+                value={inputs.email}
                 placeholder="Email"
               />
               <input
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                type="password"
+                id="password"
+                name="password"
+                onChange={handleInputChange}
                 required={true}
+                value={inputs.password}
+                type="password"
                 placeholder="Password"
               />
               <button onClick={handleSubmit} type="submit">

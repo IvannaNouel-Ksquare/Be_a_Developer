@@ -11,12 +11,12 @@ import { isAuthenticated } from "../middlewares/isAuthenticated";
 import { isAuthorized } from "../middlewares/isAuthorized";
 import { AxiosError } from "axios";
 import { User } from "../models/userModel";
-import { IUser } from "../types";
 
 export const UserRouter = Router();
 
-UserRouter.get(
-  "/",
+UserRouter.get("/",
+isAuthenticated,
+isAuthorized({ roles: ["admin","superadmin"], allowSameUser: true }),
   async (req: Request, res: Response) => {
     try {
       const listedUsers = await getAllUsers();
@@ -36,7 +36,7 @@ UserRouter.post("/newUser", async (req: Request, res: Response) => {
   }
 
   try {
-    const newUser = await createUser(displayName, email, password);
+    const newUser = await createUser(displayName, email, password,"user");
     const newUserUid = new User({ user_id: newUser });
     await newUserUid.save();
 
@@ -56,10 +56,8 @@ UserRouter.post("/newUser", async (req: Request, res: Response) => {
 
   UserRouter.get(
     "/:userId",
-    isAuthenticated,
-    isAuthorized({
-      allowSameUser: true,
-    }),
+  isAuthenticated,
+  isAuthorized({ roles: ["admin","superadmin"], allowSameUser: true }),
     async (req: Request, res: Response) => {
       const userId: string = req.params["userId"];
 
@@ -85,10 +83,8 @@ UserRouter.post("/newUser", async (req: Request, res: Response) => {
 
   UserRouter.put(
     "/:userId",
-    isAuthenticated,
-    isAuthorized({
-      allowSameUser: true,
-    }),
+  isAuthenticated,
+  isAuthorized({ roles: ["admin","superadmin"], allowSameUser: true }),
     async (req: Request, res: Response) => {
       const userId: string = req.params["userId"];
 
@@ -121,10 +117,8 @@ UserRouter.post("/newUser", async (req: Request, res: Response) => {
 
   UserRouter.delete(
     "/:userId",
-    isAuthenticated,
-    isAuthorized({
-      allowSameUser: true,
-    }),
+  isAuthenticated,
+  isAuthorized({ roles: ["admin","superadmin"], allowSameUser: true }),
     async (req: Request, res: Response) => {
       const userId: string = req.params["userId"];
       const userInfo = await admin.auth().getUser(userId);
@@ -154,7 +148,10 @@ UserRouter.post("/newUser", async (req: Request, res: Response) => {
     }
   );
 
-  UserRouter.post("/user/signin", async (req: Request, res: Response) => {
+  UserRouter.post("/user/signin",
+  isAuthenticated,
+  isAuthorized({ roles: ["user"], allowSameUser: true }),
+   async (req: Request, res: Response) => {
     const { token } = req.body;
 
     if (!token) {
@@ -181,3 +178,34 @@ UserRouter.post("/newUser", async (req: Request, res: Response) => {
       });
     }
   });
+
+  UserRouter.post(
+    "/admin",
+    isAuthenticated,
+    isAuthorized({ roles: ["superadmin"], allowSameUser: true }),
+    async (req: Request, res: Response) => {
+      const { displayName, email, password } = req.body;
+  
+      if (!displayName || !email || !password) {
+        return res.status(400).send({ error: "Missing or incorrect fields" });
+      }
+  
+      try {
+        const newAdminId = await createUser(
+          displayName,
+          email,
+          password,
+          "admin"
+        );
+  
+        res.status(201).send({
+          success: "Admin created successfully!",
+          id: newAdminId,
+        });
+      } catch (error) {
+        res
+          .status(500)
+          .send({ error: "Something went wrong, admin not created." });
+      }
+    }
+  );

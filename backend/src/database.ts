@@ -1,5 +1,9 @@
 import "dotenv/config";
 import mongoose from 'mongoose';
+import * as admin from 'firebase-admin'; 
+
+
+admin.initializeApp();
 
 const URI = process.env.DB_URI as string;
 

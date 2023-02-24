@@ -1,7 +1,13 @@
 import mongoose, { Schema } from 'mongoose';
 
+export enum UserRole {
+  USER = 'user',
+  ADMIN = 'admin',
+}
+
 interface IUser{
   user_id: string;
+  role: UserRole;
 }
 
 interface IAnswerOption {

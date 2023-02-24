@@ -123,3 +123,17 @@ export const getAllQuestions = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const getQuestionsByCategoryId = async (req: Request, res: Response) => {
+  try {
+    const categoryId = req.params.categoryId;
+    const questions = await Question.find({ category: categoryId });
+
+    res.status(200).json(questions);
+
+  } catch (error) {
+    res.status(500).json({
+      message: error
+    });
+  }
+};
