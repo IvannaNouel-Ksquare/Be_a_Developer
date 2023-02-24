@@ -1,0 +1,5 @@
+PORT = 3000
+DB_URI = mongodb+srv://test:test123@cluster0.8igmpeo.mongodb.net/?retryWrites=true&w=majority
+DB_NAME = be-a-developer
+GOOGLE_APPLICATION_CREDENTIALS = "./be-a-developer.json"
+CLAVE_API_WEB="AIzaSyCgZi3MgkZ_LrODhwJPC7ezqcMPmOSlxIs
