@@ -13,12 +13,17 @@ interface IAnswer {
   options: IAnswerOption[];
 }
 
+interface ICategory {
+  name: string;
+}
+
 export interface IQuestion extends IAnswer {
   question_id: number;
   user_id?: string;
   title: string;
   body: string;
-  category: string[];
+  category: string[] | ICategory[]; 
+  difficulty: Difficulty;
   answers: IAnswer[];
   createdAt: Date;
   updatedAt: Date;
