@@ -10,6 +10,7 @@ interface DataContextType {
   userToken: string;
   setUserToken: React.Dispatch<React.SetStateAction<string>>;
 }
+
 let DataContext = createContext<DataContextType>({} as DataContextType);
 
 export function DataContextProvider({ children }: Props) {
