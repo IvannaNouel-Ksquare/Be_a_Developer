@@ -17,7 +17,7 @@ const middleware = () => [
     isAuthorized({ roles: ["admin"], allowSameUser: true })
 ];
 
-router.get("/", isAuthenticated, middleware(), getAllQuestions);
+router.get("/", isAuthenticated, getAllQuestions);
 router.get("/:categoryId", getQuestionsByCategoryId);
 router.post("/new", middleware(), createQuestion);
 router.put("/update/:questionId", middleware(), updateQuestionById);

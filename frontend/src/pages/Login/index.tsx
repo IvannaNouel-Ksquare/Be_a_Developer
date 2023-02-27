@@ -6,6 +6,7 @@ import registerImg from "../../assets/register.png";
 
 import "./style.css";
 import { useDataContext } from "../../context/context";
+import { CircularProgress } from "@mui/material";
 
 type Props = {};
 
@@ -27,6 +28,7 @@ const Login = (props: Props) => {
   const [isRegistered, setIsRegistered] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -42,75 +44,86 @@ const Login = (props: Props) => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<EventTarget>) => {
+  const handleSubmit = (e: React.FormEvent<EventTarget>) => {
     e.preventDefault();
-      if (isRegistered) {
-        handleRegister();
-    } else {
-      try {
-        // Using context function to log in
-        const user = await logIn(inputs.email, inputs.password);
+    isRegistered ? handleRegister() : handleLogIn();
+  };
 
-        console.log("inputs", inputs.email);
-        console.log("inputs", inputs.password);
+  const handleLogIn = async () => {
+        setIsLoading(true);
 
-        console.log("User:", user);
+    try {
+      // Using context function to log in
+      const user = await logIn(inputs.email, inputs.password);
+      const uid = user.user.uid;
 
-        if (!user || !user.user || !user.user.accessToken) {
-          throw new Error("Unable to retrieve user token");
+      if (!user || !user.user || !user.user.accessToken) {
+        throw new Error("Unable to retrieve user token");
+      }
+
+      const loginResponse = await logIn(inputs.email, inputs.password);
+      const token = loginResponse.user.accessToken;
+
+      // Setting context value
+      context.setUserToken(token);
+
+      // Fetching the user
+      const dbUserResponse = await fetch(
+        `https://be-a-developer-quiz.onrender.com/user/userId/${uid}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
         }
+      );
+      if (!dbUserResponse.ok) {
+        throw new Error(`Error fetching user data: ${dbUserResponse.status}`);
+      }
 
-        const token = await user.user.accessToken;
-        const uid = user.user.uid;
+      const dbUser = await dbUserResponse.json();
+      const userUid = dbUser.user.uid;
 
-        // Setting context value
-        context.setUserToken(token);
+      // Setting context value
+      context.setUserId(userUid);
 
-        // Fetching the user
-        const dbUserResponse = await fetch(
-          `https://be-a-developer-quiz.onrender.com/user/userId/${uid}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        if (!dbUserResponse.ok) {
-          throw new Error(`Error fetching user data: ${dbUserResponse.status}`);
-        }
-
-        const dbUser = await dbUserResponse.json();
-        console.log("dbUser>", dbUser);
-
-        const userUid = dbUser.user.uid;
-        console.log("userUid>", userUid);
-
-        // Setting context value
-        context.setUserId(userUid);
-
-        // If the user log in successfully, redirect to the Home view
+      setTimeout(() => {
         navigate("/home");
-      } catch (error) {
-        console.log(error);
-        console.error(error);
+      }, 2000);
+    } catch (error) {
+      console.log(error);
 
-        if (loginErrorCount < 1) {
-          setErrMsg("Incorrect or invalid credentials.");
-          setTimeout(() => {
-            setErrMsg("");
-          }, 3000);
-        }
+      if (loginErrorCount < 1) {
+        setIsLoading(false);
+
+        setErrMsg("Missing  or invalid credentials.");
+        setTimeout(() => {
+          setErrMsg("");
+        }, 3000);
       }
     }
   };
   const handleRegister = async () => {
-    if (email && password !== "") {
-      const signedUp = await signUp(email, password);
-      console.log("signedUp>",signedUp)
-      typeof signedUp === "string"
-        ? setErrMsg(`${signedUp}`)
-        : setSuccessMsg("Registered user! You can now log in");
-    } else {
-      setErrMsg("Error: Both fields are required");
-    }
+    setIsLoading(true);
+
+    try {
+      const userCredential = await signUp(inputs.email, inputs.password);
+      const uid = userCredential.user.uid;
+
+      setSuccessMsg("Account created successfully!");
+
+      const loginResponse = await logIn(inputs.email, inputs.password);
+      const token = loginResponse.user.accessToken;
+
+      context.setUserToken(token);
+      context.setUserId(uid);
+
+      setTimeout(() => {
+        navigate("/home");
+      }, 2000);
+    } catch (error) {
+      setIsLoading(false);
+      setErrMsg("Missing information or email is taken.");
+      setTimeout(() => {
+        setErrMsg("");
+      }, 3000);    }
   };
 
   return (
@@ -120,12 +133,12 @@ const Login = (props: Props) => {
           {!isRegistered ? (
             <img src={loginImg} alt="LogIn" />
           ) : (
-            <img src={registerImg} alt="SignIn" />
+            <img src={registerImg} alt="SignUp" />
           )}
         </section>
         <section className="form-container">
           <form className="form">
-            <h1>{isRegistered ? "Sign In" : "Log In"}</h1>
+            <h1>{isRegistered ? "Sign Up" : "Log In"}</h1>
 
             <div className="content">
               <p
@@ -163,15 +176,18 @@ const Login = (props: Props) => {
                 type="password"
                 placeholder="Password"
               />
+            {isLoading && <CircularProgress />}
+
               <button onClick={handleSubmit} type="submit">
                 Ingresar
               </button>
+
               <p>
                 {!isRegistered
-                  ? "¿Do you have not an account? "
-                  : "¿Do you have an account? "}
+                  ? "Register if you don't have an account yet "
+                  : "Do you have an account? "}
                 <span onClick={() => setIsRegistered((show) => !show)}>
-                  {!isRegistered ? "Sign In here" : "Log In here"}
+                  {!isRegistered ? "Sign Up here" : "Log In here"}
                 </span>
               </p>
             </div>

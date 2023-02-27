@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 
 //components
-import DefaultMenuTemplate from "../../templates/DefaultMenuTemplate";
 import ButtonControl from "../../components/Button";
+import DefaultNavBarTemplate from "../../templates/DefaultNavBarTemplate";
 
 //style sheet
 import "./style.css";
@@ -16,19 +16,18 @@ const Home = () => {
     navigate("/categories");
   };
   return (
-      <DefaultMenuTemplate>
-        <div className="container">
-          <div className="rules">
-            <h1>Rules</h1>
-          </div>
-
-          <ButtonControl
-            nameClass={"categories"}
-            label={"categories"}
-            handleClick={handleOpenButton}
-          />
+    <DefaultNavBarTemplate>
+      <div className="container">
+        <div className="rules">
+          <h1>Rules</h1>
         </div>
-      </DefaultMenuTemplate>
+        <ButtonControl
+          nameClass={"categories"}
+          label={"categories"}
+          handleClick={handleOpenButton}
+        />
+      </div>
+    </DefaultNavBarTemplate>
   );
 };
 
