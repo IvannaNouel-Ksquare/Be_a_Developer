@@ -115,7 +115,24 @@ export const getAllQuestions = async (req: Request, res: Response) => {
   try {
     const questions = await Question.find();
 
-    res.status(200).json(questions);
+    res.status(200).json({
+      questions
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error
+    });
+  }
+};
+export const getQuestionById = async (req: Request, res: Response) => {
+  try {
+    const questionId = req.params.questionId;
+
+    const question = await Question.find({id: questionId});
+
+    res.status(200).json({
+      question
+    });
 
   } catch (error) {
     res.status(500).json({
@@ -129,8 +146,9 @@ export const getQuestionsByCategoryId = async (req: Request, res: Response) => {
     const categoryId = req.params.categoryId;
     const questions = await Question.find({ category: categoryId });
 
-    res.status(200).json(questions);
-
+    res.status(200).json({
+      questions
+    });
   } catch (error) {
     res.status(500).json({
       message: error

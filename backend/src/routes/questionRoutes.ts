@@ -4,7 +4,8 @@ import {
     createQuestion,
     updateQuestionById,
     deleteQuestionById,
-    getQuestionsByCategoryId
+    getQuestionsByCategoryId,
+    getQuestionById
 }
     from "../controllers/questionController";
 import { isAuthenticated } from "../middlewares/isAuthenticated";
@@ -17,7 +18,8 @@ const middleware = () => [
     isAuthorized({ roles: ["admin"], allowSameUser: true })
 ];
 
-router.get("/", isAuthenticated, getAllQuestions);
+router.get("/", getAllQuestions);
+router.get("question-id/:questionId", getQuestionById);
 router.get("/:categoryId", getQuestionsByCategoryId);
 router.post("/new", middleware(), createQuestion);
 router.put("/update/:questionId", middleware(), updateQuestionById);
