@@ -10,47 +10,45 @@ export const createQuestion = async (req: Request, res: Response) => {
       title, 
       body, 
       category,
-      answerText, 
-      is_correct,
-      options, 
-      difficulty } = req.body;
+      answers,
+      difficulty 
+    } = req.body;
 
-    const exist = await Question.findOne<IQuestion>({ title });
-    if (exist) {
-      res.status(403).json({
-        message: "title already exists",
-      })
-      return;
-    }
-    const newAnswer = new Answer({
-      answerText,
-      is_correct,
-      options,
-    });
-    
     const categoryObj = await Category.findById(category);
     if (!categoryObj) {
       res.status(404).json({
         message: "Category not found",
-      })
+      });
       return;
     }
+
+    const answerArray = [];
+    for (const answer of answers) {
+      const { answerText, is_correct, options } = answer;
+      const newAnswer = new Answer({
+        answerText,
+        is_correct,
+      });
+      await newAnswer.save();
+      answerArray.push(newAnswer);
+    }
+
     const newQuestion = new Question({
       title,
       body,
       category: categoryObj,
       difficulty,
-      answers: [newAnswer],
+      answers: answerArray,
     });
     await newQuestion.save();
 
     res.status(201).json({
       message: "Question created",
       newQuestion
-    })
+    });
   } catch (error) {
     res.status(500).json({
-      message: error
+       error
     });
   }
 };

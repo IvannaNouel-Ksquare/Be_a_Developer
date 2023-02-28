@@ -10,17 +10,11 @@ interface IUser{
   role: UserRole;
 }
 
-interface IAnswerOption {
-  text: string;
-  is_correct: boolean;
-}
-
 interface IAnswer {
   answer_id: number;
-  body: string;
+  answerText: string;
   createdAt: Date;
   is_correct: boolean;
-  options: IAnswerOption[];
 }
 
 interface ICategory {

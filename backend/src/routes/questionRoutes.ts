@@ -19,10 +19,10 @@ const middleware = () => [
 ];
 
 router.get("/", getAllQuestions);
-router.get("question-id/:questionId", getQuestionById);
+router.get("/question-id/:questionId", getQuestionById);
 router.get("/:categoryId", getQuestionsByCategoryId);
-router.post("/new", middleware(), createQuestion);
-router.put("/update/:questionId", middleware(), updateQuestionById);
-router.delete("/delete/:questionId", middleware(), deleteQuestionById);
+router.post("/new", createQuestion);
+router.put("/update/:questionId",updateQuestionById);
+router.delete("/delete/:questionId", deleteQuestionById);
 
 export default router;
