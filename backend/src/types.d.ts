@@ -26,7 +26,7 @@ export interface IQuestion extends IAnswer {
   user_id?: string;
   title: string;
   body: string;
-  category: string[] | ICategory[]; 
+  category: string; 
   difficulty: Difficulty;
   answers: IAnswer[];
   createdAt: Date;
