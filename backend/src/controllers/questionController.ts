@@ -6,14 +6,19 @@ import { IQuestion } from '../types';
 
 export const createQuestion = async (req: Request, res: Response) => {
   try {
-    const { 
-      title, 
-      body, 
+    const {
+      title,
+      body,
       category,
       answers,
-      difficulty 
+      difficulty
     } = req.body;
 
+    if (!title || !body || !category || !difficulty || !answers) {
+      return res.status(400).json({
+        message: 'Missing required fields'
+      });
+    }
     const categoryObj = await Category.findById(category);
     if (!categoryObj) {
       res.status(404).json({
@@ -48,14 +53,14 @@ export const createQuestion = async (req: Request, res: Response) => {
     });
   } catch (error) {
     res.status(500).json({
-       error
+      error
     });
   }
 };
 
 export const updateQuestionById = async (req: Request, res: Response) => {
   try {
-    const { 
+    const {
       questionId,
       categoryId,
       title,
@@ -111,10 +116,16 @@ export const deleteQuestionById = async (req: Request, res: Response) => {
 };
 export const getAllQuestions = async (req: Request, res: Response) => {
   try {
-    const questions = await Question.find();
-
+    const questions = await Question.find().populate({
+      path: 'answers',
+      select: '_id answerText is_correct'
+    });
+    const filteredQuestions =
+      questions.filter(question =>
+        question.category.length > 0 && question.answers.length > 0);
     res.status(200).json({
-      questions
+      message: 'Questions fetched successfully',
+      questions: filteredQuestions
     });
   } catch (error) {
     res.status(500).json({
@@ -122,11 +133,13 @@ export const getAllQuestions = async (req: Request, res: Response) => {
     });
   }
 };
+
+
 export const getQuestionById = async (req: Request, res: Response) => {
   try {
     const questionId = req.params.questionId;
 
-    const question = await Question.find({id: questionId});
+    const question = await Question.find({ id: questionId });
 
     res.status(200).json({
       question
