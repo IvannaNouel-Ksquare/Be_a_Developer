@@ -3,6 +3,8 @@ import Login from "../pages/Login";
 import Home from "../pages/Home";
 import RequireAuth from "../context/RequireAuth";
 import Categories from "../pages/Categories";
+import QuizzCSS from "../pages/QuizzCSS/QuizzCSS";
+import Score from "../pages/Score/Score";
 
 const Router = () => {
   return (
@@ -13,6 +15,8 @@ const Router = () => {
           <Route path="/home" element={<Home />} />
         </Route>
         <Route path="/categories" element={<Categories />} />
+        <Route path="/quiz-css" element={<QuizzCSS />} />
+        <Route path="/score" element={<Score />} />
       </Routes>
     </BrowserRouter>
   );

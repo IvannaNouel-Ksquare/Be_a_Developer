@@ -1,14 +1,19 @@
 import { AuthProvider } from "./context/AuthCtx";
 import Router from "./routes";
-import './App.css';
+import "./App.css";
 
+//redux store
+import store from "./redux/store";
+import { Provider } from "react-redux/es/exports";
 function App() {
   return (
-      <AuthProvider>
-       <div className='App'>
-          <Router/>
+    <AuthProvider>
+      <Provider store={store}>
+        <div className="App">
+          <Router />
         </div>
-      </AuthProvider>
+      </Provider>
+    </AuthProvider>
   );
 }
 
