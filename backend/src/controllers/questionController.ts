@@ -139,18 +139,39 @@ export const getQuestionById = async (req: Request, res: Response) => {
   try {
     const questionId = req.params.questionId;
 
-    const question = await Question.find({ id: questionId });
+    const question = await Question.findById(questionId).populate({
+      path: 'answers',
+      select: '_id answerText is_correct'
+    });
+    
+    if (!question) {
+      return res.status(404).json({
+        message: 'Question not found'
+      });
+    }
+
+    const filteredQuestion =
+     question.category.length > 0 && 
+     question.answers.length > 0 ?
+    question : null;
+    if (!filteredQuestion) {
+      return res.status(404).json({
+        message: 'Question not found'
+      });
+    }
 
     res.status(200).json({
-      question
+      message: 'Question fetched successfully',
+      question: filteredQuestion
     });
 
   } catch (error) {
     res.status(500).json({
-      message: error
+      error
     });
   }
 };
+
 
 export const getQuestionsByCategoryId = async (req: Request, res: Response) => {
   try {

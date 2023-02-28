@@ -1,21 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ButtonControl from "../../components/Button";
 import DefaultNavBarTemplate from "../../templates/DefaultNavBarTemplate";
 import "./style.css";
 
 interface Question {
+  body: ReactNode;
   _id: string;
   title: string;
-  body: string;
   category: string[];
   difficulty: string;
-  answers: string[];
+  answers: {
+    _id: string;
+    answerText: string;
+    is_correct: boolean;
+  }[];
   createdAt: string;
   updatedAt: string;
-  __v: number;
 }
-
 const Admin = () => {
   const navigate = useNavigate();
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -29,24 +31,23 @@ const Admin = () => {
     fetchQuestions();
   }, []);
 
+  const handleQuestionClick = (questionId: string) => {
+    navigate(`/question/${questionId}`);
+  };
+
   return (
     <DefaultNavBarTemplate>
       <div className="container">
-        <h1>Question List</h1>
-        {questions.length > 0 ? (
-          <ul>
-            {questions.map((question) => (
-              <li key={question._id}>
-                <h2>{question.title}</h2>
-                <p>{question.body}</p>
-                <p>{question.answers}</p>
-
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>Loading questions...</p>
-        )}
+        <h1>Questions</h1>
+        <ul>
+          {questions.map((question) => (
+            <li key={question._id}>
+              <button className="question-button" onClick={() => handleQuestionClick(question._id)}>
+                <h3>{question.title}</h3>
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
     </DefaultNavBarTemplate>
   );
