@@ -8,6 +8,7 @@ import LoginAdmin from "../pages/LoginAdmin";
 import QuestionListView from "../pages/QuestionList";
 import EditQuestionView from "../pages/EditQuestion";
 
+
 //!cambiar luego
 const Router = () => {
   return (
@@ -25,6 +26,10 @@ const Router = () => {
           <Route path="/categories" element={<Categories />} />
 {/*         </Route>
  */}      </Routes>
+
+        </Route>
+        <Route path="/quiz" element={<Quiz />} />
+      </Routes>
     </BrowserRouter>
   );
 };
