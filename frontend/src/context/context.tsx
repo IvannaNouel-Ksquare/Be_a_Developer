@@ -7,8 +7,12 @@ type Props = {
 interface DataContextType {
   userId: string;
   setUserId: React.Dispatch<React.SetStateAction<string>>;
+  adminId: string;
+  setAdminId: React.Dispatch<React.SetStateAction<string>>;
   userToken: string;
   setUserToken: React.Dispatch<React.SetStateAction<string>>;
+  adminToken: string;
+  setAdminToken: React.Dispatch<React.SetStateAction<string>>;
 }
 
 let DataContext = createContext<DataContextType>({} as DataContextType);
@@ -16,7 +20,9 @@ let DataContext = createContext<DataContextType>({} as DataContextType);
 export function DataContextProvider({ children }: Props) {
   // State variables
   const [userToken, setUserToken] = useState('');
+  const [adminToken, setAdminToken] = useState('');
   const [userId, setUserId] = useState('');
+  const [adminId, setAdminId] = useState('');
 
   // Values that will be available in the context
   let value = {
@@ -24,6 +30,10 @@ export function DataContextProvider({ children }: Props) {
     setUserToken,
     userId,
     setUserId,
+    adminToken,
+    setAdminToken,
+    adminId,
+    setAdminId
   };
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;

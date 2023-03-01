@@ -1,0 +1,50 @@
+.Button-1,
+.Button-2,
+.Button-3 {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    color: #ffffffff;
+    border: 0;
+    background: none;
+}
+
+.Button-1-clicked,
+.Button-2-clicked,
+.Button-3-clicked {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    color: #4d4c4c;
+    border: 0;
+    background: none;
+}
+
+.Button-1:hover {
+    display: flex;
+    align-items: center;
+    color: #4d4c4c;
+
+}
+
+.Button-2:hover {
+    display: flex;
+    align-items: center;
+    color: #4d4c4c;
+}
+
+.Button-3:hover {
+    display: flex;
+    align-items: center;
+    color: #4d4c4c;
+}
+
+@media (max-width: 767px) {
+
+    .Button-1,
+    .Button-2,
+    .Button-3 {
+        font-size: 0;
+        padding: 0.5rem;
+    }
+}

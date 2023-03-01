@@ -46,7 +46,7 @@ const Login = (props: Props) => {
 
   const handleSubmit = (e: React.FormEvent<EventTarget>) => {
     e.preventDefault();
-    isRegistered ? handleRegister() : handleLogIn();
+    handleLogIn();
   };
 
   const handleLogIn = async () => {
@@ -75,17 +75,26 @@ const Login = (props: Props) => {
         }
       );
 
+      const dbAdminResponse = await fetch(
+        `https://be-a-developer-quiz.onrender.com/user/adminId/${uid}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
       if (!dbUserResponse.ok) {
         throw new Error(`Error fetching user data: ${dbUserResponse.status}`);
       }
 
       const dbUser = await dbUserResponse.json();
+      const dbAdmin = await dbAdminResponse.json();
 
       const userUid = dbUser.user.uid;
+      const adminUid = dbAdmin.user.uid;
 
       context.setUserId(userUid);
 
-      navigate("/home");
+      navigate("/dashboard");
     } catch (error) {
       console.log(error);
 
@@ -99,32 +108,7 @@ const Login = (props: Props) => {
       }
     }
   };
-  const handleRegister = async () => {
-    setIsLoading(true);
-
-    try {
-      const userCredential = await signUp(inputs.email, inputs.password);
-      const uid = userCredential.user.uid;
-
-      setSuccessMsg("Account created successfully!");
-
-      const loginResponse = await logIn(inputs.email, inputs.password);
-      const token = loginResponse.user.accessToken;
-
-      context.setUserToken(token);
-      context.setUserId(uid);
-
-      setTimeout(() => {
-        navigate("/home");
-      }, 2000);
-    } catch (error) {
-      setIsLoading(false);
-      setErrMsg("Missing information or email is taken.");
-      setTimeout(() => {
-        setErrMsg("");
-      }, 3000);
-    }
-  };
+  
 
   return (
     <main className="welcome">
@@ -149,13 +133,6 @@ const Login = (props: Props) => {
                 }
               >
                 {errMsg}
-              </p>
-              <p
-                className={
-                  isRegistered && successMsg ? "success-msg" : "offscreen"
-                }
-              >
-                {successMsg}
               </p>
 
               <input
@@ -182,14 +159,7 @@ const Login = (props: Props) => {
                 Ingresar
               </button>
 
-              <p>
-                {!isRegistered
-                  ? "Register if you don't have an account yet "
-                  : "Do you have an account? "}
-                <span onClick={() => setIsRegistered((show) => !show)}>
-                  {!isRegistered ? "Sign Up here" : "Log In here"}
-                </span>
-              </p>
+             
             </div>
           </form>
         </section>

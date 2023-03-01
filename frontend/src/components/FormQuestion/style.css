@@ -1,0 +1,95 @@
+.new-btn,
+.input-btn {
+  border: 1px solid #060b26;
+  width: 15%;
+  padding: 10px;
+  font-family: "Montserrat", sans-serif;
+  margin: 1%;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+label{
+  font-size: small;
+  font-weight:bold;
+
+}
+.form-question {
+  border: 1px solid #060b26;
+  margin-bottom: 20px;
+  align-items: center;
+  width: 100%;
+}
+
+.form-question .formQ {
+  margin-left: 0.5%;
+}
+
+select {
+  background-color: #fff;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  color: #495057;
+  padding: 0.2rem;
+  width: 10%;
+  margin-left: 1%;
+}
+
+select:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+select option {
+  background-color: #fff;
+  color: #495057;
+
+}
+
+.form-question .formQ>input {
+  padding: 10px;
+  width: 20%;
+  margin: 0.5%;
+  border: 1px solid #686969ac;
+  border-radius: 8px;
+}
+
+.category-select {
+  width: 20%;
+  margin: 0.5%;
+}
+
+.error-message {
+  font-size: small;
+  color: red;
+}
+
+@media screen and (max-width: 1000px) {
+  .form-question form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  select {
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  .form-question .formQ>input {
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  .category-select {
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  .new-btn,
+  .input-btn {
+    width: 50%;
+    margin: 10px 0;
+  }
+}

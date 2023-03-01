@@ -10,17 +10,11 @@ interface IUser{
   role: UserRole;
 }
 
-interface IAnswerOption {
-  text: string;
-  is_correct: boolean;
-}
-
 interface IAnswer {
   answer_id: number;
-  body: string;
+  answerText: string;
   createdAt: Date;
   is_correct: boolean;
-  options: IAnswerOption[];
 }
 
 interface ICategory {
@@ -32,7 +26,7 @@ export interface IQuestion extends IAnswer {
   user_id?: string;
   title: string;
   body: string;
-  category: string[] | ICategory[]; 
+  category: string; 
   difficulty: Difficulty;
   answers: IAnswer[];
   createdAt: Date;
