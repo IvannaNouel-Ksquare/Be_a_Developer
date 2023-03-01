@@ -1,4 +1,4 @@
- .container {
+ .container-home{
    display: flex;
    flex-direction: column;
    justify-content: center;
@@ -10,21 +10,21 @@
    padding-bottom: 0%;
 
   }
- .container h1 {
+ .container-home h1 {
    padding-top: 2%;
  }
 
- .container .categories {
+ .container-home .categories {
    background-color: gray;
    color: black;
  }
 
- .container .categories:hover {
+ .container-home .categories:hover {
    background-color: rgb(171, 169, 169);
    color: black;
  }
 
- .container .rules {
+ .container-home .rules {
   backdrop-filter: blur(10px);
 
    display: flex;

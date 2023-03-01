@@ -17,9 +17,15 @@ const Home = () => {
   };
   return (
     <DefaultNavBarTemplate>
-      <div className="container">
+      <div className="container-home">
         <div className="rules">
           <h1>Rules</h1>
+          <ul>
+      <li>Each question will have a time limit of 1:30 mins</li>
+      <li>A player will have 1 help for each round, that help will be to eliminate 2 choices from 1 question.</li>
+      <li>Each question will provide the player with points based on the difficulty of the question.</li>
+      <li>A player must answer all 10 questions correctly or score the highest amount of points to win.</li>
+    </ul>
         </div>
         <ButtonControl
           nameClass={"categories"}
