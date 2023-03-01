@@ -49,7 +49,7 @@
 }
 
 /* GRAL */
-button {
+.app .juego-terminado button {
   width: 100%;
   font-size: 16px;
   color: #ffffff;
@@ -84,20 +84,20 @@ button {
   justify-content: space-evenly;
 }
 
-button:hover {
+.app .juego-terminado button:hover {
   background-color: #234668;
 }
 
-button[disabled] {
+.app .juego-terminado button[disabled] {
   background-color: #555e7d;
   color: #ffffff;
   cursor: not-allowed;
 }
 
-button:focus {
+.app .juego-terminado button:focus {
   outline: none;
 }
 
-button svg {
+.app .juego-terminado button svg {
   margin-right: 5px;
 }

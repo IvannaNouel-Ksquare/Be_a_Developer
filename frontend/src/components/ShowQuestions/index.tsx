@@ -11,7 +11,9 @@ interface State {
 }
 
 
+
 const Question = ({ question }: Props) => (
+
   <tr>
     <td>{question._id}</td>
     <td>{question.title}</td>
@@ -21,6 +23,8 @@ const Question = ({ question }: Props) => (
     <td>{question.updatedAt.toLocaleString()}</td>
   </tr>
 );
+
+
 
 class ViewQuestions extends Component<{}, State> {
   constructor(props: any) {

@@ -1,6 +1,6 @@
 import preguntas from "../Quiz/preguntas";
 import { useState, useEffect } from "react";
-import "../Quiz/style.css";
+import "./style.css";
 import useFetchQuestions from "../../hooks/useFetchQuestions";
 
 function Quiz() {
