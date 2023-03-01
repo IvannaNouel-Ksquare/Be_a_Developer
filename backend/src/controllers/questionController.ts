@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { Answer } from '../models/answerModel';
 import { Category } from '../models/categoryModel';
 import { Question } from '../models/QuestionModel';
-import { IQuestion } from '../types';
 
 export const createQuestion = async (req: Request, res: Response) => {
   try {
@@ -57,27 +56,65 @@ export const createQuestion = async (req: Request, res: Response) => {
     });
   }
 };
-
 export const updateQuestionById = async (req: Request, res: Response) => {
   try {
+    const { id } = req.params;
     const {
-      questionId,
-      categoryId,
       title,
       body,
+      category,
       answers,
-      difficulty } = req.body;
+      difficulty
+    } = req.body;
 
-    const question = await Question.findByIdAndUpdate(
-      questionId,
-      { title, body, answers, category: [categoryId], difficulty },
-      { new: true }
-    ).populate("category");
+    if (!title || !body || !category || !difficulty || !answers) {
+      return res.status(400).json({
+        message: 'Missing required fields'
+      });
+    }
+
+    const categoryObj = await Category.findById(category);
+    if (!categoryObj) {
+      res.status(404).json({
+        message: "Category not found",
+      });
+      return;
+    }
+
+    const answerArray = [];
+    for (const answer of answers) {
+      const { answerText, is_correct, options } = answer;
+      let answerId = answer._id;
+      if (!answerId) {
+        const newAnswer = new Answer({
+          answerText,
+          is_correct,
+        });
+        await newAnswer.save();
+        answerId = newAnswer._id;
+      } else {
+        await Answer.findByIdAndUpdate(answerId, {
+          answerText,
+          is_correct,
+        });
+      }
+      answerArray.push(answerId);
+    }
+
+    const question = await Question.findByIdAndUpdate(id, {
+      title,
+      body,
+      category: categoryObj,
+      difficulty,
+      answers: answerArray,
+      updatedAt: new Date(),
+    }, { new: true }).populate('category answers');
 
     if (!question) {
-      return res.status(404).json({
-        error: "Question not found",
+      res.status(404).json({
+        message: "Question not found",
       });
+      return;
     }
 
     res.status(200).json({
@@ -86,7 +123,7 @@ export const updateQuestionById = async (req: Request, res: Response) => {
     });
   } catch (error) {
     res.status(500).json({
-      message: error,
+      error
     });
   }
 };
@@ -143,7 +180,7 @@ export const getQuestionById = async (req: Request, res: Response) => {
       path: 'answers',
       select: '_id answerText is_correct'
     });
-    
+
     if (!question) {
       return res.status(404).json({
         message: 'Question not found'
@@ -151,9 +188,9 @@ export const getQuestionById = async (req: Request, res: Response) => {
     }
 
     const filteredQuestion =
-     question.category.length > 0 && 
-     question.answers.length > 0 ?
-    question : null;
+      question.category.length > 0 &&
+        question.answers.length > 0 ?
+        question : null;
     if (!filteredQuestion) {
       return res.status(404).json({
         message: 'Question not found'
