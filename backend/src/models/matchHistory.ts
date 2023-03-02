@@ -5,11 +5,8 @@ const matchHistorySchema = new Schema<IMatchHistory>({
     user_id: { type: String, required: true },
     date: { type: Date, default: Date.now },
     category: { type: String, required: true },
-    answers: [{
-        question: { type: String, required: true },
-        answer: { type: String, required: true },
-        is_correct: { type: Boolean, required: true },
-    }],
+    answers: [{ type: Schema.Types.ObjectId, ref: 'Answer' }],
+
 });
 
 export const MatchHistory = model<IMatchHistory>(
