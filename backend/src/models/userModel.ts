@@ -8,6 +8,8 @@ export enum UserRole {
 const userSchema = new Schema<IUser>({
     user_id: { type: String, required: true },
     role: { type: String, required: true, default: UserRole.USER },
+    match: { type: String, required: false },
+
 });
 
 export const User = model<IUser>('User', userSchema);
