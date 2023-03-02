@@ -5,22 +5,42 @@ import RequireAuth from "../context/RequireAuth";
 import Categories from "../pages/Categories";
 import Admin from "../pages/Admin";
 import LoginAdmin from "../pages/LoginAdmin";
+import QuestionListView from "../pages/QuestionList";
+import EditQuestionView from "../pages/EditQuestion";
+import HtmlQuiz from "../pages/HtmlQuiz";
+import Quiz from "../components/Quiz";
+import CssQuiz from "../pages/CssQuiz";
+import JsQuiz from "../pages/JsQuiz";
+import SqlQuiz from "../pages/SqlQuiz";
 
+//!cambiar luego
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-      <Route path="/dashboard" element={<Admin />} />
-
         <Route path="/" element={<Login />} />
         <Route path="/admin" element={<LoginAdmin />} />
-        <Route element={<RequireAuth />}>
-        <Route path="/dashboard" element={<Admin />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/categories" element={<Categories />} />
-        </Route>
 
-      </Routes>
+{/*         <Route element={<RequireAuth />}>
+ */}          <Route path="/dashboard" element={<Admin />} />
+          <Route path="/questionList" element={<QuestionListView />} />
+          <Route path="/editQuestion" element={<EditQuestionView />} />
+
+          <Route path="/home" element={<Home />} />
+          <Route path="/categories" element={<Categories />} />
+
+
+          <Route path="/quiz" element={<Quiz />} />
+
+          <Route path="/html" element={<HtmlQuiz />} />
+          <Route path="/css" element={<CssQuiz />} />
+          <Route path="/SQL" element={<SqlQuiz />} />
+          <Route path="/javascript" element={<JsQuiz />} />
+
+
+
+{/*         </Route>
+ */}      </Routes>
     </BrowserRouter>
   );
 };

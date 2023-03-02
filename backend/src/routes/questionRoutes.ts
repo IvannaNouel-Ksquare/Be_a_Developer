@@ -5,7 +5,7 @@ import {
     updateQuestionById,
     deleteQuestionById,
     getQuestionsByCategoryId,
-    getQuestionById
+    getQuestionById,
 }
     from "../controllers/questionController";
 import { isAuthenticated } from "../middlewares/isAuthenticated";

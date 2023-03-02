@@ -2,6 +2,8 @@ import { AuthProvider } from "./context/AuthCtx";
 import Router from "./routes";
 import './App.css';
 import LivecycleSdk from '@livecycle/sdk'
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 LivecycleSdk.init()
 
@@ -10,6 +12,8 @@ function App() {
       <AuthProvider>
        <div className='App'>
           <Router/>
+          <ToastContainer />
+
         </div>
       </AuthProvider>
   );

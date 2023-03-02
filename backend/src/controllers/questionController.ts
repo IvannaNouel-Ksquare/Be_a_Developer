@@ -59,67 +59,17 @@ export const createQuestion = async (req: Request, res: Response) => {
 export const updateQuestionById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const {
-      title,
-      body,
-      category,
-      answers,
-      difficulty
-    } = req.body;
+    const data = req.body;
 
-    if (!title || !body || !category || !difficulty || !answers) {
-      return res.status(400).json({
-        message: 'Missing required fields'
-      });
-    }
-
-    const categoryObj = await Category.findById(category);
-    if (!categoryObj) {
-      res.status(404).json({
-        message: "Category not found",
-      });
-      return;
-    }
-
-    const answerArray = [];
-    for (const answer of answers) {
-      const { answerText, is_correct, options } = answer;
-      let answerId = answer._id;
-      if (!answerId) {
-        const newAnswer = new Answer({
-          answerText,
-          is_correct,
-        });
-        await newAnswer.save();
-        answerId = newAnswer._id;
-      } else {
-        await Answer.findByIdAndUpdate(answerId, {
-          answerText,
-          is_correct,
+    Question.findByIdAndUpdate(id, data, { new: true }, (error, result) => {
+      if (error) {
+        return res.status(500).json({
+          error
         });
       }
-      answerArray.push(answerId);
-    }
-
-    const question = await Question.findByIdAndUpdate(id, {
-      title,
-      body,
-      category: categoryObj,
-      difficulty,
-      answers: answerArray,
-      updatedAt: new Date(),
-    }, { new: true }).populate('category answers');
-
-    if (!question) {
-      res.status(404).json({
-        message: "Question not found",
+      return res.status(200).json({
+        message: 'Question updated',
       });
-      return;
-    }
-
-    res.status(200).json({
-      message: "Question updated",
-      question,
     });
   } catch (error) {
     res.status(500).json({
@@ -171,7 +121,6 @@ export const getAllQuestions = async (req: Request, res: Response) => {
   }
 };
 
-
 export const getQuestionById = async (req: Request, res: Response) => {
   try {
     const questionId = req.params.questionId;
@@ -208,7 +157,6 @@ export const getQuestionById = async (req: Request, res: Response) => {
     });
   }
 };
-
 
 export const getQuestionsByCategoryId = async (req: Request, res: Response) => {
   try {
