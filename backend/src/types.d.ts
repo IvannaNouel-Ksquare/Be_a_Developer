@@ -16,8 +16,6 @@ interface IMatchHistory {
   category: string;
   answers: IAnswer[];
 
-}
-
 interface IAnswer {
   answer_id: number;
   answerText: string;
