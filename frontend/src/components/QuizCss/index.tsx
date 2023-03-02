@@ -17,6 +17,24 @@ interface Question {
   updatedAt: string;
 }
 
+interface Answer {
+  _id: string;
+  answerText: string;
+  is_correct: boolean;
+}
+
+interface IMatchHistory {
+  user_id: string;
+  date: Date;
+  category: string;
+  answers: {
+    _id: string;
+    answerText: string;
+    is_correct: boolean;
+  }[];
+}
+
+
 const QuizCss = () => {
   const [preguntaActual, setPreguntaActual] = useState(0);
   const [puntuación, setPuntuación] = useState(0);
@@ -25,6 +43,13 @@ const QuizCss = () => {
   const [areDisabled, setAreDisabled] = useState(false);
   const [answersShown, setAnswersShown] = useState(false);
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [matchHistory, setMatchHistory] = useState<IMatchHistory[]>([]);
+  const [helpUsed, setHelpUsed] = useState(false);
+  let filteredAnswers: Answer[] = [
+    { _id: '1', answerText: 'Answer 1', is_correct: true },
+    { _id: '2', answerText: 'Answer 2', is_correct: false },
+    { _id: '3', answerText: 'Answer 3', is_correct: false }
+  ];
   const navigate = useNavigate();
 
   function handleAnswerSubmit(isCorrect: any, e: any) {
@@ -57,6 +82,53 @@ const QuizCss = () => {
     };
     fetchQuestions(categoryId);
   }, []);
+
+  const saveMatchHistory = async (data: any) => {
+    try {
+      const res = await fetch(
+        "https://be-a-developer-quiz.onrender/user/match-history",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
+      console.log("response:", res);
+      const { data: newMatch } = await res.json();
+      setMatchHistory([...matchHistory, newMatch]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  function shuffle(array: any[]) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+  
+  const handleHelp = () => {
+    
+    const currentAnswers = [...questions[preguntaActual].answers];
+    const correctAnswer = currentAnswers.find((answer) => answer.is_correct);
+    const incorrectAnswers = currentAnswers.filter(
+      (answer) => !answer.is_correct
+    );
+     filteredAnswers = [
+      correctAnswer,
+      ...shuffle(incorrectAnswers).slice(0, filteredAnswers.length - 2),
+    ];
+    const updatedQuestions = [...questions];
+    updatedQuestions[preguntaActual].answers = filteredAnswers;
+    setQuestions(updatedQuestions);
+    setHelpUsed(true);
+  };
+  
 
   useEffect(() => {
     const intervalo = setInterval(() => {
@@ -125,34 +197,39 @@ const QuizCss = () => {
     <main className="app">
       <div className="lado-izquierdo">
         <div className="numero-pregunta">
-          <span> Question {preguntaActual + 1} de</span> {questions.length}
+          <span>Question {preguntaActual + 1} de</span> {questions.length}
         </div>
         <div className="titulo-pregunta">
           {questions.length > 0 && questions[preguntaActual].title}
         </div>
-        <div>
-          {!areDisabled ? (
-            <span className="tiempo-restante">Time: {tiempoRestante} </span>
-          ) : (
-            <button
-              onClick={() => {
-                setTiempoRestante(10);
-                setAreDisabled(false);
-                if (preguntaActual === questions.length - 1) {
-                  setIsFinished(true);
-                } else {
-                  setPreguntaActual(preguntaActual + 1);
-                }
-              }}
-            >
-              Continue
-            </button>
-          )}
-        </div>
+        {helpUsed ? (
+          <div className="help-used">Help has already been used.</div>
+        ) : (
+          <button className="help-button" onClick={handleHelp}>
+            Use Help (eliminate 2 incorrect answers)
+          </button>
+        )}
+        {!areDisabled ? (
+          <span className="tiempo-restante">Time: {tiempoRestante} </span>
+        ) : (
+          <button
+            onClick={() => {
+              setTiempoRestante(10);
+              setAreDisabled(false);
+              if (preguntaActual === questions.length - 1) {
+                setIsFinished(true);
+              } else {
+                setPreguntaActual(preguntaActual + 1);
+              }
+            }}
+          >
+            Continue
+          </button>
+        )}
       </div>
-      <div className="lado-derecho">
-        {questions.length > 0 &&
-          questions[preguntaActual].answers.map((respuesta) => (
+      {questions.length > 0 && (
+        <div className="lado-derecho">
+          {questions[preguntaActual].answers.map((respuesta) => (
             <button
               disabled={areDisabled}
               key={respuesta.answerText}
@@ -161,7 +238,13 @@ const QuizCss = () => {
               {respuesta.answerText}
             </button>
           ))}
-      </div>
+          {helpUsed && (
+            <div className="help-used">
+              Two incorrect answers have been eliminated!
+            </div>
+          )}
+        </div>
+      )}
     </main>
   );
 };
