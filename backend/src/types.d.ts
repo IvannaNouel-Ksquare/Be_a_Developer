@@ -15,7 +15,6 @@ interface IMatchHistory {
   date: Date;
   category: string;
   answers: IAnswer[];
-}
 
 interface IAnswer {
   answer_id: number;

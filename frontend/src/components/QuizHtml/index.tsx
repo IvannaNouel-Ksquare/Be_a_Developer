@@ -1,5 +1,7 @@
 import { useState, useEffect, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
+import axios, { AxiosResponse } from 'axios';
+
 import "./style.css";
 
 interface Question {
@@ -17,6 +19,22 @@ interface Question {
   updatedAt: string;
 }
 
+interface Answer {
+  text: string;
+  isCorrect: boolean;
+}
+
+interface IMatchHistory {
+  user_id: string;
+  date: Date;
+  category: string;
+  answers: {
+    _id: string;
+    answerText: string;
+    is_correct: boolean;
+  }[];
+}
+
 const QuizHtml = () => {
   const [preguntaActual, setPreguntaActual] = useState(0);
   const [puntuación, setPuntuación] = useState(0);
@@ -25,6 +43,9 @@ const QuizHtml = () => {
   const [areDisabled, setAreDisabled] = useState(false);
   const [answersShown, setAnswersShown] = useState(false);
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [matchHistory, setMatchHistory] = useState<IMatchHistory[]>([]);
+  const [helpUsed, setHelpUsed] = useState(false);
+
   const navigate = useNavigate();
 
   function handleAnswerSubmit(isCorrect: any, e: any) {
@@ -37,12 +58,13 @@ const QuizHtml = () => {
     setTimeout(() => {
       if (preguntaActual === questions.length - 1) {
         setIsFinished(true);
-      } else {
+              } else {
         setPreguntaActual(preguntaActual + 1);
         setTiempoRestante(10);
       }
     }, 1500);
   }
+ 
 
   useEffect(() => {
     //html
@@ -57,6 +79,32 @@ const QuizHtml = () => {
     };
     fetchQuestions(categoryId);
   }, []);
+
+
+  const saveMatchHistory = async (data: any) => {
+    try {
+      const res = await fetch(
+        "https://be-a-developer-quiz.onrender/user/match-history",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+     
+      console.log("response:", res);
+      const { data: newMatch } = await res.json();
+      setMatchHistory([...matchHistory, newMatch]);
+
+    } catch (error) {
+
+      console.log(error);
+    }
+  };
+
+
 
   useEffect(() => {
     const intervalo = setInterval(() => {
