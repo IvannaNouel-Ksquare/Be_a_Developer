@@ -10,6 +10,17 @@ interface IUser{
   role: UserRole;
 }
 
+interface IMatchHistory {
+  user_id: string;
+  date: Date;
+  category: string;
+  answers: {
+    question: string;
+    answer: string;
+    is_correct: boolean;
+  }[];
+}
+
 interface IAnswer {
   answer_id: number;
   answerText: string;
