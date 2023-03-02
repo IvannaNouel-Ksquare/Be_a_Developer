@@ -14,11 +14,8 @@ interface IMatchHistory {
   user_id: string;
   date: Date;
   category: string;
-  answers: {
-    question: string;
-    answer: string;
-    is_correct: boolean;
-  }[];
+  answers: IAnswer[];
+
 }
 
 interface IAnswer {
