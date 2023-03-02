@@ -7,13 +7,27 @@ function Quiz() {
   const [preguntaActual, setPreguntaActual] = useState(0);
   const [puntuación, setPuntuación] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
-  const [tiempoRestante, setTiempoRestante] = useState(10);
+  const [tiempoRestante, setTiempoRestante] = useState(90);
   const [areDisabled, setAreDisabled] = useState(false);
   const [answersShown, setAnswersShown] = useState(false);
 
+  const [maxPuntuacion, setMaxPuntuacion] = useState(6);
+
+  const [dificulty, setDificulty] = useState(
+    preguntas[preguntaActual].dificultad
+  );
+
+  //Add the selection option
   function handleAnswerSubmit(isCorrect: any, e: any) {
     // añadir puntuación
-    if (isCorrect) setPuntuación(puntuación + 1);
+    setTimeout(() => {
+      if (isCorrect && dificulty === "Easy") setPuntuación(puntuación + 1);
+
+      if (isCorrect && dificulty === "Medium") setPuntuación(puntuación + 2);
+
+      if (isCorrect && dificulty === "Hard") setPuntuación(puntuación + 3);
+    }, 1000);
+
     // añadir estilos de pregunta
     e.target.classList.add(isCorrect ? "correct" : "incorrect");
     // cambiar a la siguiente pregunta
@@ -23,12 +37,14 @@ function Quiz() {
         setIsFinished(true);
       } else {
         setPreguntaActual(preguntaActual + 1);
-        setTiempoRestante(10);
+        setTiempoRestante(90);
       }
     }, 1500);
   }
 
   useEffect(() => {
+    setDificulty(preguntas[preguntaActual].dificultad);
+
     //Fetchin API
     const fetchAPI = async () => {
       const url = "https://be-a-developer-quiz.onrender.com/question";
@@ -53,10 +69,11 @@ function Quiz() {
       });
       */
     };
-    fetchAPI();
+    //fetchAPI();
     const intervalo = setInterval(() => {
       if (tiempoRestante > 0) setTiempoRestante((prev) => prev - 1);
       if (tiempoRestante === 0) setAreDisabled(true);
+      //añadir dificultad state
     }, 1000);
 
     return () => clearInterval(intervalo);
@@ -68,7 +85,7 @@ function Quiz() {
         <div className="juego-terminado">
           <span>
             {" "}
-            Obtuviste {puntuación} de {preguntas.length}{" "}
+            Obtuviste {puntuación} de {maxPuntuacion}{" "}
           </span>
           <button onClick={() => (window.location.href = "/")}>
             {" "}
@@ -130,6 +147,8 @@ function Quiz() {
         <div className="titulo-pregunta">
           {preguntas[preguntaActual].titulo}
         </div>
+        {/**Añade la dificultad */}
+        <div className="dificulty">{preguntas[preguntaActual].dificultad}</div>
         <div>
           {!areDisabled ? (
             <span className="tiempo-restante">
@@ -138,7 +157,7 @@ function Quiz() {
           ) : (
             <button
               onClick={() => {
-                setTiempoRestante(10);
+                setTiempoRestante(90);
                 setAreDisabled(false);
                 if (preguntaActual === preguntas.length - 1) {
                   setIsFinished(true);
