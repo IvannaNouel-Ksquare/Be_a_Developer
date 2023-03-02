@@ -8,19 +8,21 @@ export enum UserRole {
 interface IUser{
   user_id: string;
   role: UserRole;
+  match: string;
 }
-
-interface IMatchHistory {
-  user_id: string;
-  date: Date;
-  category: string;
-  answers: IAnswer[];
 
 interface IAnswer {
   answer_id: number;
   answerText: string;
   createdAt: Date;
   is_correct: boolean;
+}
+
+interface IMatchHistory extends IAnswer{
+  user_id: string;
+  date: Date;
+  category: string;
+  answers: IAnswer[];
 }
 
 interface ICategory {
