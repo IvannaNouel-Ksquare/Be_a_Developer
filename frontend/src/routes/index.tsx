@@ -7,8 +7,11 @@ import Admin from "../pages/Admin";
 import LoginAdmin from "../pages/LoginAdmin";
 import QuestionListView from "../pages/QuestionList";
 import EditQuestionView from "../pages/EditQuestion";
-import Quiz from "../pages/Quiz";
 import HtmlQuiz from "../pages/HtmlQuiz";
+import Quiz from "../components/Quiz";
+import CssQuiz from "../pages/CssQuiz";
+import JsQuiz from "../pages/JsQuiz";
+import SqlQuiz from "../pages/SqlQuiz";
 
 //!cambiar luego
 const Router = () => {
@@ -29,7 +32,11 @@ const Router = () => {
 
           <Route path="/quiz" element={<Quiz />} />
 
-          <Route path="/Html" element={<HtmlQuiz />} />
+          <Route path="/html" element={<HtmlQuiz />} />
+          <Route path="/css" element={<CssQuiz />} />
+          <Route path="/SQL" element={<SqlQuiz />} />
+          <Route path="/javascript" element={<JsQuiz />} />
+
 
 
 {/*         </Route>

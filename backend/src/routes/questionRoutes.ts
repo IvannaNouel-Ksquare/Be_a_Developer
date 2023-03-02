@@ -6,7 +6,6 @@ import {
     deleteQuestionById,
     getQuestionsByCategoryId,
     getQuestionById,
-    getAllQuestionsByCategory
 }
     from "../controllers/questionController";
 import { isAuthenticated } from "../middlewares/isAuthenticated";
@@ -20,8 +19,6 @@ const middleware = () => [
 ];
 
 router.get("/", getAllQuestions);
-router.get("/of/:categoryId", getAllQuestionsByCategory);
-
 router.get("/question-id/:questionId", getQuestionById);
 router.get("/:categoryId", getQuestionsByCategoryId);
 router.post("/new", createQuestion);

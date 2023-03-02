@@ -101,3 +101,34 @@
 .app .juego-terminado button svg {
   margin-right: 5px;
 }
+
+/* Styles for small screens */
+@media (max-width: 768px) {
+  .app {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .lado-izquierdo {
+    margin-bottom: 20px;
+  }
+}
+
+/* Styles for medium screens */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .app {
+    max-width: 800px;
+  }
+}
+
+/* Styles for large screens */
+@media (min-width: 1025px) {
+  .app {
+    max-width: 1200px;
+  }
+}
+
+
+
+
+

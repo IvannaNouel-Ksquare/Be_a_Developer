@@ -38,12 +38,12 @@ const Home = () => {
               <ButtonControl
                 nameClass={"category-button"}
                 label={"HTML"}
-                handleClick={() => handleCategorySelection("Html")}
+                handleClick={() => handleCategorySelection("html")}
               />
               <ButtonControl
                 nameClass={"category-button"}
                 label={"CSS"}
-                handleClick={() => handleCategorySelection("Css")}
+                handleClick={() => handleCategorySelection("css")}
               />
               <ButtonControl
                 nameClass={"category-button"}

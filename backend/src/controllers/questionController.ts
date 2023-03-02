@@ -121,28 +121,6 @@ export const getAllQuestions = async (req: Request, res: Response) => {
   }
 };
 
-export const getAllQuestionsByCategory = async (req: Request, res: Response) => {
-  try {
-    const categoryId = req.params.categoryId;
-    const questions = await Question.find({ category: categoryId }).populate({
-      path: 'answers',
-      select: '_id answerText is_correct'
-    });
-    const filteredQuestions =
-      questions.filter(question => question.answers.length > 0);
-    res.status(200).json({
-      message: 'Questions fetched successfully',
-      questions: filteredQuestions
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: error
-    });
-  }
-};
-
-
-
 export const getQuestionById = async (req: Request, res: Response) => {
   try {
     const questionId = req.params.questionId;
@@ -180,14 +158,18 @@ export const getQuestionById = async (req: Request, res: Response) => {
   }
 };
 
-
 export const getQuestionsByCategoryId = async (req: Request, res: Response) => {
   try {
     const categoryId = req.params.categoryId;
-    const questions = await Question.find({ category: categoryId });
-
+    const questions = await Question.find({ category: categoryId }).populate({
+      path: 'answers',
+      select: '_id answerText is_correct'
+    });
+    const filteredQuestions =
+      questions.filter(question => question.answers.length > 0);
     res.status(200).json({
-      questions
+      message: 'Questions fetched successfully',
+      questions: filteredQuestions
     });
   } catch (error) {
     res.status(500).json({
