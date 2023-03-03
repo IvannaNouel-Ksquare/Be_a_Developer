@@ -1,0 +1,144 @@
+.app-js .tiempo-restante {
+    font-size: 24px;
+    color: #fcbf3d;
+    margin-bottom: 20px;
+  }
+  
+  .app-js .correct,
+  .app-js .correct:hover {
+    background-color: #2f922f;
+    font-size: 20px;
+  }
+  
+  .app-js .incorrect,
+  .app-js .incorrect:hover {
+    background-color: #ff3333;
+    font-size: 20px;
+  }
+  
+  .app-js .container{
+    width: 80%;
+  }
+  
+  .app-js {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    font-size: 24px;
+    color: #333;
+    flex-direction: column;
+  }
+  
+  .app-js .lado-izquierdo {
+    width: 50%;
+    padding: 0 20px;
+    display: contents;
+  }
+  
+  .app-js .numero-pregunta {
+    font-size: 32px;
+    font-weight: bold;
+  }
+  
+  .app-js .titulo-pregunta {
+    font-size: 36px;
+    margin: 20px 0;
+  }
+  
+  .app-js .help-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-size: 24px;
+  }
+  
+  .app-js .help-used {
+    color: #dc3545;
+    margin-bottom: 10px;
+    font-size: 24px;
+  }
+  
+  .app-js .tiempo-restante {
+    font-size: 32px;
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  
+  .app-js .lado-derecho {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .app-js button {
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-size: 24px;
+  }
+  
+  .app-js button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .app-js .juego-terminado {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .app-js .juego-terminado span {
+    font-size: 32px;
+    margin: 10px 0;
+  }
+  
+  .app-js .juego-terminado button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 20px;
+    cursor: pointer;
+    font-size: 24px;
+  }
+  
+  .app-js .juego-terminado button:hover {
+    background-color: #007bffd9;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 20px;
+    cursor: pointer;
+    font-size: 24px;
+  }
+  
+  .app-js .juego-terminado button:not(:last-child) {
+    margin-right: 10px;
+  }
+  
+  @media (max-width: 768px) {
+    .app-js {
+      flex-direction: column;
+    }
+    
+    .app-js .lado-izquierdo,
+    .app-js .lado-derecho {
+      width: 100%;
+    }
+  }
+  
+  

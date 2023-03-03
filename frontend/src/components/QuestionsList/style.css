@@ -1,0 +1,58 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 45%);
+    grid-auto-rows: auto;
+    justify-content: center;
+    align-items: center;
+    grid-gap: 10px;
+    padding: 10px;
+}
+.container-form{
+    display: flex;
+}
+
+.new-btn{
+    margin-top: 2%;
+}
+.grid-item {
+    border: 1px solid #060b26;
+    padding: 10px;
+}
+
+.title {
+    text-align: center;
+    overflow-wrap: break-word;
+}
+
+.subtitle {
+    overflow-wrap: break-word;
+}
+
+.btn {
+    float: right;
+    border: 1px solid #060b26;
+    background-color: #FFFFFF;
+    font-size: 1rem;
+    margin: 2.5px;
+    padding: 5px;
+    display: flex;
+    border-radius: 0.25rem;
+
+    align-items: flex-end;
+
+}
+
+.btn:hover {
+    border: 1px solid #FFFFFF;
+    color: #FFFFFF;
+    background-color: #060b26;
+}
+
+@media screen and (max-width: 1000px) {
+    .grid-container {
+        grid-template-columns: repeat(1, 90%);
+    }
+    .new-btn{
+        margin-top: 20%;
+    }
+}
