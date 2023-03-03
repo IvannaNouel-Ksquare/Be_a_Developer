@@ -12,6 +12,8 @@ import Quiz from "../components/Quiz";
 import CssQuiz from "../pages/CssQuiz";
 import JsQuiz from "../pages/JsQuiz";
 import SqlQuiz from "../pages/SqlQuiz";
+import HardQuiz from "../pages/HardQuiz";
+import UserHistory from "../pages/History";
 
 //!cambiar luego
 const Router = () => {
@@ -21,26 +23,23 @@ const Router = () => {
         <Route path="/" element={<Login />} />
         <Route path="/admin" element={<LoginAdmin />} />
 
-{/*         <Route element={<RequireAuth />}>
- */}          <Route path="/dashboard" element={<Admin />} />
+        <Route element={<RequireAuth />}>
+          <Route path="/dashboard" element={<Admin />} />
           <Route path="/questionList" element={<QuestionListView />} />
           <Route path="/editQuestion" element={<EditQuestionView />} />
 
           <Route path="/home" element={<Home />} />
           <Route path="/categories" element={<Categories />} />
 
-
-          <Route path="/quiz" element={<Quiz />} />
-
           <Route path="/html" element={<HtmlQuiz />} />
           <Route path="/css" element={<CssQuiz />} />
           <Route path="/SQL" element={<SqlQuiz />} />
           <Route path="/javascript" element={<JsQuiz />} />
+          <Route path="/hard-quiz" element={<HardQuiz />} />
 
-
-
-{/*         </Route>
- */}      </Routes>
+          <Route path="/match-history" element={<UserHistory />} />
+        </Route>
+      </Routes>
     </BrowserRouter>
   );
 };

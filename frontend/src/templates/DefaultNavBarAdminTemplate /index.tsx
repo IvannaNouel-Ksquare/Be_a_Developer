@@ -33,7 +33,7 @@ const DefaultNavBarAdminTemplate = ({ children }: Props) => {
 
   const buttonClassName2 = clicked2 ? "Button-1-clicked" : "Button-1";
   const buttonClassName1 = clicked1 ? "Button-2-clicked" : "Button-2";
-  const buttonClassName3 = clicked1 ? "Button-3-clicked" : "Button-3";
+  const buttonClassName3 = clicked3 ? "Button-3-clicked" : "Button-3";
 
   const handleDashboard = () => {
     setClicked1(true);

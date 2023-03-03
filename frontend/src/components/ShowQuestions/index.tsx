@@ -1,30 +1,50 @@
 import axios from "axios";
-import  { Component } from "react";
-import {  IQuestion } from "../Question";
+import { Component } from "react";
+import { IQuestion } from "../Question";
 import "./style.css";
 
-interface Props {
+ interface Props {
   question: IQuestion;
 }
 interface State {
   questions: IQuestion[];
 }
 
+const formatDate = (date: Date) => {
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  }).format(new Date(date));
+};
 
+const categoryOptions = [
+  { name: "JavaScript", _id: "63f81bf1a4dc0282423ce727" },
+  { name: "Html", _id: "63f824bf313a5b593a06f030" },
+  { name: "Sql", _id: "63f824c9313a5b593a06f033" },
+  { name: "Css", _id: "63f824b8313a5b593a06f02d" },
+];
 
-const Question = ({ question }: Props) => (
+const Question = ({ question }: Props) => {
+  const categoryName =
+  categoryOptions.find((category) => category._id === question.category[0])
+      ?.name || "Unknown";
 
-  <tr>
-    <td>{question._id}</td>
-    <td>{question.title}</td>
-    <td>{question.body}</td>
-    <td>{question.category}</td>
-    <td>{question.createdAt.toLocaleString()}</td>
-    <td>{question.updatedAt.toLocaleString()}</td>
-  </tr>
-);
-
-
+  return (
+    <tr>
+      <td>{question._id}</td>
+      <td>{question.title}</td>
+      <td>{question.body}</td>
+      <td>{categoryName}</td>
+      <td>{question.difficulty}</td>
+      <td>{formatDate(question.createdAt)}</td>
+      <td>{formatDate(question.updatedAt)}</td>
+    </tr>
+  );
+};
 
 class ViewQuestions extends Component<{}, State> {
   constructor(props: any) {
@@ -33,12 +53,35 @@ class ViewQuestions extends Component<{}, State> {
   }
 
   componentDidMount() {
-    axios
-      .get("https://be-a-developer-quiz.onrender.com/question")
-      .then((res) => {
-        this.setState({ questions: res.data.questions });
+    Promise.all([
+      axios.get("https://be-a-developer-quiz.onrender.com/question"),
+      axios.get("https://be-a-developer-quiz.onrender.com/category"),
+    ])
+      .then(([questionsRes, categoriesRes]) => {
+        const questions = questionsRes.data.questions;
+        const categories = categoriesRes.data.categories.reduce(
+          (
+            acc: { [x: string]: any },
+            category: { _id: string | number; name: any }
+          ) => {
+            acc[category._id] = category.name;
+            return acc;
+          },
+          {}
+        );
+
+        const questionsWithCategoryNames = questions.map(
+          (question: { category: string | number }) => {
+            return {
+              ...question,
+              categoryName: categories[question.category],
+            };
+          }
+        );
+
+        this.setState({ questions: questionsWithCategoryNames });
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error);
       });
   }
@@ -61,6 +104,7 @@ class ViewQuestions extends Component<{}, State> {
                 <th>Title</th>
                 <th>Body</th>
                 <th>Category</th>
+                <th>Difficulty</th>
                 <th>CreatedAt</th>
                 <th>UpdatedAt</th>
               </tr>

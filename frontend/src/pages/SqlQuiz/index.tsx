@@ -1,15 +1,17 @@
 import QuizSql from "../../components/QuizSQL";
- import "./style.css";
- 
+import DefaultNavBarTemplate from "../../templates/DefaultNavBarTemplate";
+import "./style.css";
+
 const SqlQuiz = () => {
   return (
-    <div className="html-quiz-container">
-      <div className="container">
-        <QuizSql/>
+    <DefaultNavBarTemplate>
+      <div className="sql-quiz-container">
+        <div className="container">
+          <QuizSql />
+        </div>
       </div>
-    </div>
+    </DefaultNavBarTemplate>
   );
 };
 
 export default SqlQuiz;
-

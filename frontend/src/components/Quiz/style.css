@@ -1,134 +1,162 @@
-.app {
-  background-color: #252d4a;
-  max-width: 650px;
-  min-width: 450px;
-  height: min-content;
-  min-height: 200px;
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 10px 10px 42px 0px rgba(0, 0, 0, 0.75);
-  display: flex;
-  justify-content: space-evenly;
-}
-
-/* PREGUNTAS */
-.lado-izquierdo {
-  width: 100%;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-}
-
-.pregunta-numero {
-  margin-bottom: 20px;
-}
-
-.pregunta-numero span {
-  font-size: 28px;
-}
-
-.pregunta-titulo {
-  margin-bottom: 12px;
-}
-
-.lado-derecho {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-/* FINALIZADO */
-.juego-terminado {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  font-size: 24px;
-  align-items: center;
-}
-
-/* GRAL */
-.app .juego-terminado button {
-  width: 100%;
-  font-size: 16px;
-  color: #ffffff;
-  background-color: #252d4a;
-  border-radius: 15px;
-  display: flex;
-  padding: 5px;
-  justify-content: flex-start;
-  align-items: center;
-  border: 5px solid #234668;
-  cursor: pointer;
-}
-
-.tiempo-restante {
-  font-size: 14px;
-  color: #fcbf3d;
-  margin-bottom: 20px;
-}
-
-.correct,
-.correct:hover {
-  background-color: #2f922f;
-}
-
-.incorrect,
-.incorrect:hover {
-  background-color: #ff3333;
-}
-
-.btns-container {
-  display: flex;
-  justify-content: space-evenly;
-}
-
-.app .juego-terminado button:hover {
-  background-color: #234668;
-}
-
-.app .juego-terminado button[disabled] {
-  background-color: #555e7d;
-  color: #ffffff;
-  cursor: not-allowed;
-}
-
-.app .juego-terminado button:focus {
-  outline: none;
-}
-
-.app .juego-terminado button svg {
-  margin-right: 5px;
-}
-
-/* Styles for small screens */
-@media (max-width: 768px) {
+.app .tiempo-restante {
+    font-size: 24px;
+    color: #fcbf3d;
+    margin-bottom: 20px;
+  }
+  
+  .app .correct,
+  .app .correct:hover {
+    background-color: #2f922f;
+    font-size: 20px;
+  }
+  
+  .app .incorrect,
+  .app .incorrect:hover {
+    background-color: #ff3333;
+    font-size: 20px;
+  }
+  
+  .container{
+    width: 80%;
+  
+  }
+  
   .app {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    font-size: 24px;
+    color: #333;
+    flex-direction: column;
+  }
+  
+  .app .lado-izquierdo {
+    width: 50%;
+    padding: 0 20px;
+    display: contents;
+  }
+  
+  .app .numero-pregunta {
+    font-size: 32px;
+    font-weight: bold;
+  }
+  
+  .app .titulo-pregunta {
+    font-size: 36px;
+    margin: 20px 0;
+  }
+  
+  .app .help-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-size: 24px;
+  }
+  
+  .app .help-used {
+    color: #dc3545;
+    margin-bottom: 10px;
+    font-size: 24px;
+  }
+  
+  .app .tiempo-restante {
+    font-size: 32px;
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  
+  .app .lado-derecho {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .app button {
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-size: 24px;
+  }
+  
+  .app button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .app .juego-terminado {
+    display: flex;
     flex-direction: column;
     align-items: center;
   }
   
-  .lado-izquierdo {
-    margin-bottom: 20px;
+  .app .juego-terminado span {
+    font-size: 32px;
+    margin: 10px 0;
   }
-}
-
-/* Styles for medium screens */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .app {
-    max-width: 800px;
+  
+  .app .juego-terminado button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 20px;
+    cursor: pointer;
+    font-size: 24px;
   }
-}
-
-/* Styles for large screens */
-@media (min-width: 1025px) {
-  .app {
-    max-width: 1200px;
+  
+  .app .juego-terminado button:hover {
+    background-color: #007bffd9;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 20px;
+    cursor: pointer;
+    font-size: 24px;
   }
-}
-
-
-
-
-
+  
+  .app .juego-terminado button:not(:last-child) {
+    margin-right: 10px;
+  }
+  
+  @media (max-width: 768px) {
+    .app {
+      flex-direction: column;
+    }
+    
+    .app .lado-izquierdo,
+    .app .lado-derecho {
+      width: 100%;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .app .numero-pregunta {
+      font-size: 28px;
+    }
+    
+    .app .titulo-pregunta {
+      font-size: 32px;
+    }
+    
+    .app .juego-terminado span {
+      font-size: 28px;
+    }
+    
+    .app .juego-terminado button {
+      font-size: 28px;
+    }
+  }
+  

@@ -1,6 +1,10 @@
 import { useState, useEffect, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
-import "../Quiz/style.css";
+
+import "./style.css";
+import { useDataContext } from "../../context/context";
+import { toast } from "react-toastify";
+
 interface Question {
   body: ReactNode;
   _id: string;
@@ -33,37 +37,52 @@ interface IMatchHistory {
   }[];
 }
 
-
-function Quiz() {
+const QuizHtml = () => {
   const [preguntaActual, setPreguntaActual] = useState(0);
   const [puntuación, setPuntuación] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
-  const [tiempoRestante, setTiempoRestante] = useState(10);
+  const [tiempoRestante, setTiempoRestante] = useState(90);
   const [areDisabled, setAreDisabled] = useState(false);
   const [answersShown, setAnswersShown] = useState(false);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [matchHistory, setMatchHistory] = useState<IMatchHistory[]>([]);
+  const [disabledOptions, setDisabledOptions] = useState<string[]>([]);
+
   const [helpUsed, setHelpUsed] = useState(false);
   let filteredAnswers: Answer[] = [
-    { _id: '1', answerText: 'Answer 1', is_correct: true },
-    { _id: '2', answerText: 'Answer 2', is_correct: false },
-    { _id: '3', answerText: 'Answer 3', is_correct: false }
+    { _id: "1", answerText: "Answer 1", is_correct: true },
+    { _id: "2", answerText: "Answer 2", is_correct: false },
+    { _id: "3", answerText: "Answer 3", is_correct: false },
   ];
   const navigate = useNavigate();
+  const context = useDataContext();
 
   function handleAnswerSubmit(isCorrect: any, e: any) {
-    // añadir puntuación
-    if (isCorrect) setPuntuación(puntuación + 1);
-    // añadir estilos de pregunta
-    e.target.classList.add(isCorrect ? "correct" : "incorrect");
-    // cambiar a la siguiente pregunta
+    const currentQuestion = questions[preguntaActual];
+    const difficulty = currentQuestion.difficulty;
+    let points = 0;
 
+    if (difficulty === "Easy") {
+      points = 1;
+    } else if (difficulty === "Intermediate") {
+      points = 2;
+    } else if (difficulty === "Hard") {
+      points = 3;
+    }
+
+    // add points
+    if (isCorrect) setPuntuación(puntuación + points);
+
+    // add question styles
+    e.target.classList.add(isCorrect ? "correct" : "incorrect");
+
+    // move to the next question
     setTimeout(() => {
       if (preguntaActual === questions.length - 1) {
         setIsFinished(true);
       } else {
         setPreguntaActual(preguntaActual + 1);
-        setTiempoRestante(10);
+        setTiempoRestante(90);
       }
     }, 1500);
   }
@@ -74,18 +93,22 @@ function Quiz() {
       const respuesta = await fetch(url);
       const resultado = await respuesta.json();
       const questionsData = await resultado.questions;
-
-      setQuestions(questionsData);
-
+      const hardQuestions = questionsData.filter(
+        (question: { difficulty: string; }) => question.difficulty === "Hard"
+      );
+      const selectedQuestions = hardQuestions.slice(0, 10);
+      setQuestions(selectedQuestions);
     };
   
     fetchAPI();
   }, []);
   
+  
+
   const saveMatchHistory = async (data: any) => {
     try {
       const res = await fetch(
-        "https://be-a-developer-quiz.onrender/user/match-history",
+        "https://be-a-developer-quiz.onrender.com/user/match-history",
         {
           method: "POST",
           headers: {
@@ -98,6 +121,9 @@ function Quiz() {
       console.log("response:", res);
       const { data: newMatch } = await res.json();
       setMatchHistory([...matchHistory, newMatch]);
+      toast.success("Match history successfully saved!", {
+        position: toast.POSITION.TOP_CENTER,
+      });
     } catch (error) {
       console.log(error);
     }
@@ -110,24 +136,19 @@ function Quiz() {
     }
     return array;
   }
-  
+
   const handleHelp = () => {
-    
-    const currentAnswers = [...questions[preguntaActual].answers];
-    const correctAnswer = currentAnswers.find((answer) => answer.is_correct);
-    const incorrectAnswers = currentAnswers.filter(
-      (answer) => !answer.is_correct
-    );
-     filteredAnswers = [
-      correctAnswer,
-      ...shuffle(incorrectAnswers).slice(0, filteredAnswers.length - 2),
-    ];
-    const updatedQuestions = [...questions];
-    updatedQuestions[preguntaActual].answers = filteredAnswers;
-    setQuestions(updatedQuestions);
-    setHelpUsed(true);
+    if (!helpUsed) {
+      const incorrectOptions = questions[preguntaActual].answers.filter(
+        (opcion) => !opcion.is_correct
+      );
+      const shuffledOptions = shuffle(incorrectOptions);
+      setDisabledOptions(
+        shuffledOptions.slice(0, 2).map((opcion) => opcion.answerText)
+      );
+      setHelpUsed(true);
+    }
   };
-  
 
   useEffect(() => {
     const intervalo = setInterval(() => {
@@ -143,9 +164,9 @@ function Quiz() {
       <main className="app">
         <div className="juego-terminado">
           <span>
-            {" "}
-            You got {puntuación} of {questions.length}{" "}
+            You got {puntuación} out of {30}
           </span>
+          <span>{puntuación < 25 ? "You Lost" : "Winner!"}</span>
           <button onClick={() => navigate("/home")}> Play again</button>
           <button
             onClick={() => {
@@ -155,6 +176,22 @@ function Quiz() {
             }}
           >
             See Answers
+          </button>
+          <button
+            onClick={() =>
+              saveMatchHistory({
+                user_id: context.userId,
+                date: new Date().toLocaleString("en-US"),
+                category: "Sql",
+                answers: questions.map(({ _id, answers }) => ({
+                  _id,
+                  answerText: answers.find((a) => a.is_correct)?.answerText,
+                  is_correct: false,
+                })),
+              })
+            }
+          >
+            Save Match History
           </button>
         </div>
       </main>
@@ -213,7 +250,7 @@ function Quiz() {
         ) : (
           <button
             onClick={() => {
-              setTiempoRestante(10);
+              setTiempoRestante(90);
               setAreDisabled(false);
               if (preguntaActual === questions.length - 1) {
                 setIsFinished(true);
@@ -230,7 +267,9 @@ function Quiz() {
         <div className="lado-derecho">
           {questions[preguntaActual].answers.map((respuesta) => (
             <button
-              disabled={areDisabled}
+              disabled={
+                areDisabled || disabledOptions.includes(respuesta.answerText)
+              }
               key={respuesta.answerText}
               onClick={(e) => handleAnswerSubmit(respuesta.is_correct, e)}
             >
@@ -248,4 +287,4 @@ function Quiz() {
   );
 };
 
-export default Quiz;
+export default QuizHtml;

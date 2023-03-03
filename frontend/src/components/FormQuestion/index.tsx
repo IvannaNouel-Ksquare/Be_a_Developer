@@ -73,25 +73,24 @@ const FormQuestion = ({ onClickFn, btnTxt, initData }: Props) => {
     setAnswers(updatedAnswers);
   };
 
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!title) {
       toast.error("Please enter a title", {
-        position: toast.POSITION.TOP_CENTER
-    });
+        position: toast.POSITION.TOP_CENTER,
+      });
       return;
     }
     if (!body) {
       toast.error("Please enter a body", {
-        position: toast.POSITION.TOP_CENTER
-    });
+        position: toast.POSITION.TOP_CENTER,
+      });
       return;
     }
-    if (!difficulty || !category || answers.length < 2 ) {
+    if (!difficulty || !category || answers.length < 2) {
       toast.error("Please fill out all required fields", {
-        position: toast.POSITION.TOP_CENTER
-    });
+        position: toast.POSITION.TOP_CENTER,
+      });
       return;
     }
     const data: IQuestion = {
@@ -112,7 +111,6 @@ const FormQuestion = ({ onClickFn, btnTxt, initData }: Props) => {
     onClickFn(data);
     navigate("/dashboard");
   };
-  
 
   const parseDifficulty = (value: string): Difficulty => {
     switch (value) {
@@ -127,12 +125,21 @@ const FormQuestion = ({ onClickFn, btnTxt, initData }: Props) => {
     }
   };
 
+  const categoryOptionsNames = [
+    { name: "JavaScript", _id: "63f81bf1a4dc0282423ce727" },
+    { name: "Html", _id: "63f824bf313a5b593a06f030" },
+    { name: "Sql", _id: "63f824c9313a5b593a06f033" },
+    { name: "Css", _id: "63f824b8313a5b593a06f02d" },
+  ];
+
+  const matchedCategory = categoryOptionsNames.find(
+    (cat) => cat._id === category
+  );
+
   return (
     <div className="container-form">
       <form className="form-question" onSubmit={handleSubmit}>
-        <div
-          className={`formQ`}
-        >
+        <div className={`formQ`}>
           <label htmlFor="title">Title:</label>
           <input
             type="text"
@@ -142,22 +149,23 @@ const FormQuestion = ({ onClickFn, btnTxt, initData }: Props) => {
               setTitle(e.target.value);
             }}
           />
-
-        
         </div>
         <div className="formQ">
           <label htmlFor="category">Category:</label>
-          <select className="category-select"
+          <select
+            className="category-select"
             value={category}
-            onChange={(e) => setCategory(e.target.value)}  >
+            onChange={(e) => setCategory(e.target.value)}
+          >
             <option value="">Select a category</option>
-            {categoryOptions.map((cat: Category) => (
-              <option key={cat.name} value={cat.name}>
-                {cat.name}
+            {categoryOptionsNames.map((cat) => (
+              <option key={cat._id} value={cat._id}>
+                {matchedCategory && matchedCategory._id === cat._id
+                  ? matchedCategory.name
+                  : cat.name}
               </option>
             ))}
           </select>
-
         </div>
         <div className="formQ">
           <label htmlFor="difficulty">Difficulty:</label>
@@ -180,8 +188,6 @@ const FormQuestion = ({ onClickFn, btnTxt, initData }: Props) => {
               setBody(e.target.value);
             }}
           />
-          
-      
         </div>
         <div className="formQ">
           <label>Answers:</label>

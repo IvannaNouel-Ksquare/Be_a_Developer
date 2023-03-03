@@ -1,0 +1,40 @@
+.match-history {
+    margin: 9rem;
+}
+
+.match-history h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.main-table {
+    margin-top: 2rem;
+}
+
+.table-striped {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.table-striped th,
+.table-striped td {
+    border: 1px solid #ddd;
+    padding: 0.5rem;
+    text-align: left;
+}
+
+.table-striped th {
+    background-color: #f2f2f2;
+}
+
+.table-striped tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+@media screen and (max-width: 600px) {
+
+    .match-history {
+        margin: 2rem;
+    }
+}

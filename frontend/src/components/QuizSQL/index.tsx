@@ -1,6 +1,10 @@
 import { useState, useEffect, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
+
 import "./style.css";
+import { useDataContext } from "../../context/context";
+import { toast } from "react-toastify";
+import { QuestionsByDifficulty } from "../QuizHtml";
 
 interface Question {
   body: ReactNode;
@@ -34,39 +38,56 @@ interface IMatchHistory {
   }[];
 }
 
-const QuizSql = () => {
+const QuizHtml = () => {
   const [preguntaActual, setPreguntaActual] = useState(0);
   const [puntuación, setPuntuación] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
-  const [tiempoRestante, setTiempoRestante] = useState(10);
+  const [tiempoRestante, setTiempoRestante] = useState(90);
   const [areDisabled, setAreDisabled] = useState(false);
   const [answersShown, setAnswersShown] = useState(false);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [matchHistory, setMatchHistory] = useState<IMatchHistory[]>([]);
+  const [disabledOptions, setDisabledOptions] = useState<string[]>([]);
+
   const [helpUsed, setHelpUsed] = useState(false);
   let filteredAnswers: Answer[] = [
-    { _id: '1', answerText: 'Answer 1', is_correct: true },
-    { _id: '2', answerText: 'Answer 2', is_correct: false },
-    { _id: '3', answerText: 'Answer 3', is_correct: false }
+    { _id: "1", answerText: "Answer 1", is_correct: true },
+    { _id: "2", answerText: "Answer 2", is_correct: false },
+    { _id: "3", answerText: "Answer 3", is_correct: false },
   ];
   const navigate = useNavigate();
+  const context = useDataContext();
 
   function handleAnswerSubmit(isCorrect: any, e: any) {
-    // añadir puntuación
-    if (isCorrect) setPuntuación(puntuación + 1);
-    // añadir estilos de pregunta
-    e.target.classList.add(isCorrect ? "correct" : "incorrect");
-    // cambiar a la siguiente pregunta
+    const currentQuestion = questions[preguntaActual];
+    const difficulty = currentQuestion.difficulty;
+    let points = 0;
 
+    if (difficulty === "Easy") {
+      points = 1;
+    } else if (difficulty === "Intermediate") {
+      points = 2;
+    } else if (difficulty === "Hard") {
+      points = 3;
+    }
+
+    // add points
+    if (isCorrect) setPuntuación(puntuación + points);
+
+    // add question styles
+    e.target.classList.add(isCorrect ? "correct" : "incorrect");
+
+    // move to the next question
     setTimeout(() => {
       if (preguntaActual === questions.length - 1) {
         setIsFinished(true);
       } else {
         setPreguntaActual(preguntaActual + 1);
-        setTiempoRestante(10);
+        setTiempoRestante(90);
       }
     }, 1500);
   }
+
   useEffect(() => {
     //sql
     const categoryId = "63f824c9313a5b593a06f033";
@@ -75,8 +96,45 @@ const QuizSql = () => {
         `https://be-a-developer-quiz.onrender.com/question/${categoryId}`
       );
       const data = await res.json();
-      console.log(data);
-      setQuestions(data.questions);
+      const allQuestions = data.questions;
+
+      // Filter the questions by difficulty
+      const questionsByDifficulty: QuestionsByDifficulty = {
+        hard: allQuestions.filter(
+          (q: { difficulty: string }) => q.difficulty === "Hard"
+        ),
+        intermediate: allQuestions.filter(
+          (q: { difficulty: string }) => q.difficulty === "Intermediate"
+        ),
+        easy: allQuestions.filter(
+          (q: { difficulty: string }) => q.difficulty === "Easy"
+        ),
+      };
+
+      // Assign the questions to their respective positions
+      const positions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+      const questions: Question[] = [];
+
+      // Add the hard questions to positions 3, 6, and 10
+      questionsByDifficulty.hard.forEach((q, i) => {
+        const position = [3, 6, 10][i];
+        questions[position - 1] = q;
+      });
+
+      // Add the intermediate questions to positions 2, 5, 8, and 9
+      questionsByDifficulty.intermediate.forEach((q, i) => {
+        const position = [2, 5, 8, 9][i];
+        questions[position - 1] = q;
+      });
+
+      // Add the easy questions to positions 1, 4, and 7
+      questionsByDifficulty.easy.forEach((q, i) => {
+        const position = [1, 4, 7][i];
+        questions[position - 1] = q;
+      });
+      console.log(questionsByDifficulty);
+
+      setQuestions(questions);
     };
     fetchQuestions(categoryId);
   }, []);
@@ -84,7 +142,7 @@ const QuizSql = () => {
   const saveMatchHistory = async (data: any) => {
     try {
       const res = await fetch(
-        "https://be-a-developer-quiz.onrender/user/match-history",
+        "https://be-a-developer-quiz.onrender.com/user/match-history",
         {
           method: "POST",
           headers: {
@@ -97,6 +155,9 @@ const QuizSql = () => {
       console.log("response:", res);
       const { data: newMatch } = await res.json();
       setMatchHistory([...matchHistory, newMatch]);
+      toast.success("Match history successfully saved!", {
+        position: toast.POSITION.TOP_CENTER,
+      });
     } catch (error) {
       console.log(error);
     }
@@ -109,24 +170,19 @@ const QuizSql = () => {
     }
     return array;
   }
-  
+
   const handleHelp = () => {
-    
-    const currentAnswers = [...questions[preguntaActual].answers];
-    const correctAnswer = currentAnswers.find((answer) => answer.is_correct);
-    const incorrectAnswers = currentAnswers.filter(
-      (answer) => !answer.is_correct
-    );
-     filteredAnswers = [
-      correctAnswer,
-      ...shuffle(incorrectAnswers).slice(0, filteredAnswers.length - 2),
-    ];
-    const updatedQuestions = [...questions];
-    updatedQuestions[preguntaActual].answers = filteredAnswers;
-    setQuestions(updatedQuestions);
-    setHelpUsed(true);
+    if (!helpUsed) {
+      const incorrectOptions = questions[preguntaActual].answers.filter(
+        (opcion) => !opcion.is_correct
+      );
+      const shuffledOptions = shuffle(incorrectOptions);
+      setDisabledOptions(
+        shuffledOptions.slice(0, 2).map((opcion) => opcion.answerText)
+      );
+      setHelpUsed(true);
+    }
   };
-  
 
   useEffect(() => {
     const intervalo = setInterval(() => {
@@ -142,9 +198,12 @@ const QuizSql = () => {
       <main className="app">
         <div className="juego-terminado">
           <span>
-            {" "}
-            You got {puntuación} of {questions.length}{" "}
+            You got {puntuación} out of {20}
           </span>
+          <span>{puntuación < 15 ? "You Lost" : "Winner!"}</span>
+          {puntuación === 20 && (
+            <button onClick={() => navigate("/hard-quiz")}>Bonus Quiz(HARD)</button>
+          )}
           <button onClick={() => navigate("/home")}> Play again</button>
           <button
             onClick={() => {
@@ -154,6 +213,22 @@ const QuizSql = () => {
             }}
           >
             See Answers
+          </button>
+          <button
+            onClick={() =>
+              saveMatchHistory({
+                user_id: context.userId,
+                date: new Date().toLocaleString("en-US"),
+                category: "Sql",
+                answers: questions.map(({ _id, answers }) => ({
+                  _id,
+                  answerText: answers.find((a) => a.is_correct)?.answerText,
+                  is_correct: false,
+                })),
+              })
+            }
+          >
+            Save Match History
           </button>
         </div>
       </main>
@@ -212,7 +287,7 @@ const QuizSql = () => {
         ) : (
           <button
             onClick={() => {
-              setTiempoRestante(10);
+              setTiempoRestante(90);
               setAreDisabled(false);
               if (preguntaActual === questions.length - 1) {
                 setIsFinished(true);
@@ -229,7 +304,9 @@ const QuizSql = () => {
         <div className="lado-derecho">
           {questions[preguntaActual].answers.map((respuesta) => (
             <button
-              disabled={areDisabled}
+              disabled={
+                areDisabled || disabledOptions.includes(respuesta.answerText)
+              }
               key={respuesta.answerText}
               onClick={(e) => handleAnswerSubmit(respuesta.is_correct, e)}
             >
@@ -247,5 +324,4 @@ const QuizSql = () => {
   );
 };
 
-
-export default QuizSql;
+export default QuizHtml;

@@ -1,19 +1,19 @@
-import QuizJavaScript from "../../components/QuizJS";
+import Quiz from "../../components/Quiz";
 import DefaultNavBarTemplate from "../../templates/DefaultNavBarTemplate";
 
 import "./style.css";
  
-const JsQuiz = () => {
+const HardQuiz = () => {
   return (
     <DefaultNavBarTemplate>
-    <div className="js-quiz-container">
+    <div className="hard-quiz-container">
       <div className="container">
-        <QuizJavaScript/>
+        <Quiz/>
       </div>
     </div>
     </DefaultNavBarTemplate>
   );
 };
 
-export default JsQuiz;
+export default HardQuiz;
 

@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthCtx";
-import loginImg from "../../assets/login.png";
-import registerImg from "../../assets/register.png";
+
 
 import "./style.css";
 import { useDataContext } from "../../context/context";
@@ -111,18 +110,12 @@ const Login = (props: Props) => {
   
 
   return (
-    <main className="welcome">
+    <main className="welcome-admin">
       <div className="login-container">
-        <section className="img-container">
-          {!isRegistered ? (
-            <img src={loginImg} alt="LogIn" />
-          ) : (
-            <img src={registerImg} alt="SignUp" />
-          )}
-        </section>
-        <section className="form-container">
-          <form className="form">
-            <h1>{isRegistered ? "Sign Up" : "Log In"}</h1>
+      <section className="form-container-admin">
+
+          <form className="form-admin">
+            <h1>{"Log In"}</h1>
 
             <div className="content">
               <p
@@ -158,7 +151,6 @@ const Login = (props: Props) => {
               <button onClick={handleSubmit} type="submit">
                 Ingresar
               </button>
-
              
             </div>
           </form>

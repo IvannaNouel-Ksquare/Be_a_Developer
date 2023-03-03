@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthCtx";
-import loginImg from "../../assets/login.png";
-import registerImg from "../../assets/register.png";
 
 import "./style.css";
 import { useDataContext } from "../../context/context";
@@ -81,9 +79,10 @@ const Login = (props: Props) => {
 
       const dbUser = await dbUserResponse.json();
 
-      const userUid = dbUser.user.uid;
+      const userUid = dbUser.user.user_id;
 
       context.setUserId(userUid);
+
 
       navigate("/home");
     } catch (error) {
@@ -128,15 +127,11 @@ const Login = (props: Props) => {
 
   return (
     <main className="welcome">
+      
       <div className="login-container">
-        <section className="img-container">
-          {!isRegistered ? (
-            <img src={loginImg} alt="LogIn" />
-          ) : (
-            <img src={registerImg} alt="SignUp" />
-          )}
-        </section>
-        <section className="form-container">
+      <section className="form-container-user">
+
+         
           <form className="form">
             <h1>{isRegistered ? "Sign Up" : "Log In"}</h1>
 
@@ -179,7 +174,8 @@ const Login = (props: Props) => {
               {isLoading && <CircularProgress />}
 
               <button onClick={handleSubmit} type="submit">
-                Ingresar
+              {isRegistered ? "Sign Up" : "Log In"}
+
               </button>
 
               <p>
